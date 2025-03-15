@@ -65,7 +65,7 @@
                             <div class="mt-6">
                                 <x-input-label for="email" :value="__('Email')" class="text-white text-lg mb-2" />
                                 <x-text-input id="email" 
-                                    class="block w-full p-4 bg-white/5 border-0 texsite placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all" 
+                                    class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all" 
                                     type="email" 
                                     name="email" 
                                     :value="old('email')" 

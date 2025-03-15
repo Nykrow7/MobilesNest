@@ -51,8 +51,11 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Remove auto-login
+        // Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        // Redirect to login with success message
+        return redirect()->route('login')
+            ->with('success', 'Account created successfully! Please login with your credentials.');
     }
 }

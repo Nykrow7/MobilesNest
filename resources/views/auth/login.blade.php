@@ -43,7 +43,12 @@
                             <p class="text-white/70">Please sign in to your account</p>
                         </div>
 
-                        
+                        @if (session('success'))
+                            <div class="mb-4 text-sm text-green-600">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
                         <x-auth-session-status class="mb-4" :status="session('status')" />
 
                         <form method="POST" action="{{ route('login') }}" class="space-y-8">
