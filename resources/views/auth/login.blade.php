@@ -43,14 +43,6 @@
                             <p class="text-white/70">Please sign in to your account</p>
                         </div>
 
-                        @if (session('success'))
-                            <div class="mb-4 text-sm text-green-600">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-
-                        <x-auth-session-status class="mb-4" :status="session('status')" />
-
                         <form method="POST" action="{{ route('login') }}" class="space-y-8">
                             @csrf
 
@@ -99,6 +91,26 @@
                                     </a>
                                 @endif
                             </div>
+
+                            <!-- Error Messages -->
+                            @if ($errors->any())
+                                <div class="mt-4">
+                                    <div class="text-red-500 text-sm">
+                                        @foreach ($errors->all() as $error)
+                                            <p>{{ $error }}</p>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Success Message -->
+                            @if (session('success'))
+                                <div class="mt-4">
+                                    <div class="text-green-500 text-sm">
+                                        {{ session('success') }}
+                                    </div>
+                                </div>
+                            @endif
 
                             <!-- Submit Button -->
                             <div class="mt-10">

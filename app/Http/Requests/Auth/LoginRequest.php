@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class LoginRequest extends FormRequest
 {
@@ -41,8 +42,20 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Add debugging
+        Log::info('Login attempt', [
+            'email' => $this->email,
+            // Don't log the actual password
+            'password_length' => strlen($this->password)
+        ]);
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
+
+            // Add more debugging
+            Log::info('Login failed - checking database record');
+            $user = \App\Models\User::where('email', $this->email)->first();
+            Log::info('User found in database?', ['exists' => !is_null($user)]);
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -80,6 +93,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 }
