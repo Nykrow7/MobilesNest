@@ -57,4 +57,10 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function showSecurityPassword()
+    {
+        // Logic to show the security password settings
+        return view('profile.security-password'); // Adjust the view name as necessary
+    }
 }

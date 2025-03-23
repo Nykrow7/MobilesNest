@@ -23,7 +23,7 @@ class LoginRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
     {
@@ -42,20 +42,14 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        // Add debugging
-        Log::info('Login attempt', [
-            'email' => $this->email,
-            // Don't log the actual password
-            'password_length' => strlen($this->password)
-        ]);
+        // Debug login attempt
+        Log::info('Login attempt', ['email' => $this->email]);
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
-            // Add more debugging
-            Log::info('Login failed - checking database record');
-            $user = \App\Models\User::where('email', $this->email)->first();
-            Log::info('User found in database?', ['exists' => !is_null($user)]);
+            // Log the failed attempt
+            Log::warning('Failed login attempt', ['email' => $this->email]);
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
