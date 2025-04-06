@@ -85,10 +85,16 @@
                                 </label>
 
                                 @if (Route::has('password.request'))
-                                    <a class="text-blue-400 hover:text-blue-300 transition-colors" 
-                                        href="{{ route('password.request') }}">
-                                        {{ __('Forgot your password?') }}
-                                    </a>
+                                    <div class="flex flex-col space-y-2">
+                                        <a class="text-blue-400 hover:text-blue-300 transition-colors" 
+                                            href="{{ route('password.request') }}">
+                                            {{ __('Forgot your password?') }}
+                                        </a>
+                                        <a class="text-blue-400 hover:text-blue-300 transition-colors text-sm" 
+                                            href="{{ route('password.security.request') }}">
+                                            {{ __('Reset with security question') }}
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
 

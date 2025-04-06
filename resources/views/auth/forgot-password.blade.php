@@ -74,11 +74,18 @@
                                 </x-primary-button>
                             </div>
 
-                            <!-- Back to Login -->
+                            <!-- Alternative Options -->
                             <div class="text-center mt-8">
-                                <a href="{{ route('login') }}" class="text-blue-400 hover:text-blue-300 transition-colors">
-                                    {{ __('Back to Login') }}
-                                </a>
+                                <div class="mb-4">
+                                    <a href="{{ route('password.security.request') }}" class="text-blue-400 hover:text-blue-300 transition-colors">
+                                        {{ __('Reset with Security Question Instead') }}
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href="{{ route('login') }}" class="text-blue-400 hover:text-blue-300 transition-colors">
+                                        {{ __('Back to Login') }}
+                                    </a>
+                                </div>
                             </div>
                         </form>
                     </div>
