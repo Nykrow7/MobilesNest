@@ -6,9 +6,11 @@ use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,9 +25,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
@@ -85,6 +85,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('orders', AdminOrderController::class);
     Route::resource('users', AdminUserController::class);
     Route::resource('transactions', TransactionController::class)->only(['index', 'show']);
+    
+    // Inventory routes
+    Route::get('inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('inventory/{id}/edit', [\App\Http\Controllers\Admin\InventoryController::class, 'edit'])->name('inventory.edit');
+    Route::put('inventory/{id}', [\App\Http\Controllers\Admin\InventoryController::class, 'update'])->name('inventory.update');
+    Route::post('inventory/{id}/adjust', [\App\Http\Controllers\Admin\InventoryController::class, 'adjustQuantity'])->name('inventory.adjust');
+    Route::get('inventory/low-stock', [\App\Http\Controllers\Admin\InventoryController::class, 'lowStock'])->name('inventory.low-stock');
+    Route::get('inventory/export', [\App\Http\Controllers\Admin\InventoryController::class, 'export'])->name('inventory.export');
 });
 
 require __DIR__.'/auth.php';
