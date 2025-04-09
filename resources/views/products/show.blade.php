@@ -10,7 +10,7 @@
         <span class="mx-2">/</span>
         <span class="text-gray-900">{{ $product->name }}</span>
     </div>
-    
+
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
             <!-- Product Images -->
@@ -21,11 +21,11 @@
                         <img src="{{ asset('storage/' . $product->primaryImage->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
                     </div>
                 </div>
-                
+
                 @if($product->images->count() > 1)
                 <div class="grid grid-cols-5 gap-2">
                     @foreach($product->images as $image)
-                    <div class="cursor-pointer border-2 {{ $image->is_primary ? 'border-blue-500' : 'border-transparent' }} rounded-md overflow-hidden hover:border-blue-300 transition duration-200" 
+                    <div class="cursor-pointer border-2 {{ $image->is_primary ? 'border-blue-500' : 'border-transparent' }} rounded-md overflow-hidden hover:border-blue-300 transition duration-200"
                          onclick="showImage('{{ Storage::url($image->image_path) }}', this)">
                         <img src="{{ Storage::url($image->image_path) }}" alt="{{ $product->name }}" class="w-full h-16 object-cover">
                     </div>
@@ -38,12 +38,12 @@
                 </div>
                 @endif
             </div>
-            
+
             <!-- Product Details -->
             <div>
                 <h1 class="text-3xl font-bold mb-2">{{ $product->name }}</h1>
                 <p class="text-xl text-gray-600 mb-4">{{ $product->brand }}</p>
-                
+
                 <div class="mb-6">
                     <span class="text-2xl font-bold text-blue-600">{{ $product->formatted_price }}</span>
                     @if($product->stock_quantity > 0)
@@ -52,7 +52,7 @@
                     <span class="ml-3 bg-red-100 text-red-800 text-sm font-semibold px-2 py-1 rounded">Out of Stock</span>
                     @endif
                 </div>
-                
+
                 <!-- Bulk Pricing -->
                 @php
                     $activeTiers = $product->bulkPricingTiers->where('is_active', true)->sortBy('min_quantity');
@@ -94,12 +94,11 @@
                     </div>
                 </div>
                 @endif
-                
+
                 <!-- Add to Cart Form -->
                 @if($product->stock_quantity > 0)
-                <form action="{{ route('cart.add') }}" method="POST" class="mb-6">
+                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="mb-6">
                     @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
                     <div class="flex items-center mb-4">
                         <label for="quantity" class="block text-sm font-medium text-gray-700 mr-4">Quantity:</label>
                         <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock_quantity }}" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
@@ -109,7 +108,7 @@
                     </button>
                 </form>
                 @endif
-                
+
                 <!-- Key Specifications -->
                 <div class="grid grid-cols-2 gap-4 mb-6">
                     <div class="flex items-center">
@@ -167,7 +166,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Product Description and Specifications -->
         <div class="p-6 border-t">
             <div class="mb-8">
@@ -176,7 +175,7 @@
                     {!! nl2br(e($product->description)) !!}
                 </div>
             </div>
-            
+
             <div>
                 <h2 class="text-xl font-bold mb-4">Specifications</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -209,7 +208,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h3 class="font-semibold mb-2">Technical Specifications</h3>
                         <table class="w-full">
@@ -241,7 +240,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     @if($product->additional_specs)
                     <div class="bg-gray-50 rounded-lg p-4 md:col-span-2">
                         <h3 class="font-semibold mb-2">Additional Specifications</h3>
@@ -261,7 +260,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Related Products -->
     @if($relatedProducts->isNotEmpty())
     <div class="mt-12">
@@ -277,7 +276,7 @@
                         <span class="text-gray-500">No image</span>
                     </div>
                     @endif
-                    
+
                     <div class="p-4">
                         <h3 class="text-lg font-semibold mb-2">{{ $relatedProduct->name }}</h3>
                         <p class="text-gray-600 mb-2">{{ $relatedProduct->brand }}</p>
@@ -301,13 +300,13 @@
     function showImage(src, element) {
         // Update main image
         document.getElementById('mainImage').querySelector('img').src = src;
-        
+
         // Update border for thumbnails
         document.querySelectorAll('.cursor-pointer').forEach(el => {
             el.classList.remove('border-blue-500');
             el.classList.add('border-transparent');
         });
-        
+
         element.classList.remove('border-transparent');
         element.classList.add('border-blue-500');
     }

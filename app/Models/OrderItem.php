@@ -54,7 +54,7 @@ class OrderItem extends Model
      */
     public function getFormattedUnitPriceAttribute(): string
     {
-        return '$' . number_format($this->unit_price, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->unit_price);
     }
 
     /**
@@ -62,6 +62,6 @@ class OrderItem extends Model
      */
     public function getFormattedSubtotalAttribute(): string
     {
-        return '$' . number_format($this->subtotal, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->subtotal);
     }
 }

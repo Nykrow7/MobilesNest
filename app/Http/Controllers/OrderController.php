@@ -64,13 +64,13 @@ class OrderController extends Controller
         // Create order items
         foreach ($cart->items as $cartItem) {
             $product = $cartItem->product;
-            
+
             // Check stock availability
             if ($product->stock_quantity < $cartItem->quantity) {
                 return redirect()->route('cart.index')
                     ->with('error', "Not enough stock available for {$product->name}. Available: {$product->stock_quantity}");
             }
-            
+
             // Create order item
             OrderItem::create([
                 'order_id' => $order->id,
@@ -79,7 +79,7 @@ class OrderController extends Controller
                 'unit_price' => $cartItem->unit_price,
                 'subtotal' => $cartItem->subtotal,
             ]);
-            
+
             // Update product stock
             $product->stock_quantity -= $cartItem->quantity;
             $product->save();
@@ -164,5 +164,30 @@ class OrderController extends Controller
 
         return redirect()->route('orders.show', $order)
             ->with('success', 'Order cancelled successfully.');
+    }
+
+    /**
+     * Mark an order as delivered (received by customer).
+     */
+    public function markDelivered(Order $order)
+    {
+        // Ensure the order belongs to the current user
+        if ($order->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Only shipped orders can be marked as delivered
+        if ($order->shipping_status !== 'shipped') {
+            return redirect()->route('orders.show', $order)
+                ->with('error', 'Only shipped orders can be marked as delivered.');
+        }
+
+        // Update shipping status and delivered_at timestamp
+        $order->shipping_status = 'delivered';
+        $order->delivered_at = now();
+        $order->save();
+
+        return redirect()->route('orders.show', $order)
+            ->with('success', 'Order marked as delivered successfully.');
     }
 }

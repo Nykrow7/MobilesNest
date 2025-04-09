@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -17,28 +18,28 @@ class AdminOrderController extends Controller
     public function index(Request $request)
     {
         $query = Order::with('user');
-        
+
         // Filter by status if provided
         if ($request->has('status') && $request->status != 'all') {
             $query->where('status', $request->status);
         }
-        
+
         // Filter by date range if provided
         if ($request->has('from_date') && $request->from_date) {
             $query->whereDate('created_at', '>=', $request->from_date);
         }
-        
+
         if ($request->has('to_date') && $request->to_date) {
             $query->whereDate('created_at', '<=', $request->to_date);
         }
-        
+
         // Sort orders
         $sortField = $request->input('sort', 'created_at');
         $sortDirection = $request->input('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
-        
+
         $orders = $query->paginate(15);
-        
+
         return view('admin.orders.index', compact('orders'));
     }
 
@@ -78,6 +79,7 @@ class AdminOrderController extends Controller
     {
         $validated = $request->validate([
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'shipping_status' => 'required|in:pending,shipped,delivered',
             'tracking_number' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
         ]);
@@ -91,6 +93,13 @@ class AdminOrderController extends Controller
                     }
                 }
             });
+        }
+
+        // Handle shipping status changes
+        if ($validated['shipping_status'] === 'shipped' && $order->shipping_status !== 'shipped') {
+            $validated['shipped_at'] = now();
+        } elseif ($validated['shipping_status'] === 'delivered' && $order->shipping_status !== 'delivered') {
+            $validated['delivered_at'] = now();
         }
 
         $order->update($validated);

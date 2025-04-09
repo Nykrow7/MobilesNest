@@ -71,7 +71,11 @@ class Product extends Model
      */
     public function primaryImage()
     {
-        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+        return $this->hasOne(ProductImage::class)->where('is_primary', true)
+            ->withDefault([
+                'image_path' => 'images/default-product.jpg',
+                'url' => asset('images/default-product.jpg')
+            ]);
     }
 
     /**
@@ -79,7 +83,7 @@ class Product extends Model
      */
     public function getFormattedPriceAttribute(): string
     {
-        return '$' . number_format($this->price, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->price);
     }
 
     /**
@@ -105,7 +109,7 @@ class Product extends Model
     {
         return $query->where('is_featured', true);
     }
-    
+
     /**
      * Get the bulk pricing tiers for the product.
      */
@@ -113,7 +117,7 @@ class Product extends Model
     {
         return $this->hasMany(BulkPricingTier::class);
     }
-    
+
     /**
      * Get the applicable bulk pricing tier for a given quantity.
      *
@@ -124,7 +128,7 @@ class Product extends Model
     {
         return BulkPricingTier::getApplicableTier($this->id, $quantity);
     }
-    
+
     /**
      * Get the price for a given quantity, taking bulk pricing into account.
      *
@@ -134,11 +138,19 @@ class Product extends Model
     public function getPriceForQuantity(int $quantity): float
     {
         $tier = $this->getApplicableBulkPricingTier($quantity);
-        
+
         if ($tier) {
             return $tier->price;
         }
-        
+
         return $this->price;
+    }
+
+    /**
+     * Get the inventory record associated with the product.
+     */
+    public function inventory()
+    {
+        return $this->hasOne(Inventory::class);
     }
 }

@@ -12,11 +12,23 @@ class TransactionController extends Controller
     /**
      * Display a listing of the transactions.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::with('order.user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = Transaction::with('order.user')
+            ->orderBy('created_at', 'desc');
+
+        // Apply sorting if provided
+        if ($request->has('column') && $request->has('sort')) {
+            $column = $request->input('column');
+            $direction = $request->input('sort');
+            $sortableColumns = ['id', 'transaction_number', 'amount', 'payment_method', 'status', 'created_at'];
+            
+            if (in_array($column, $sortableColumns)) {
+                $query->orderBy($column, $direction);
+            }
+        }
+
+        $transactions = $query->paginate(10);
 
         return view('admin.transactions.index', compact('transactions'));
     }

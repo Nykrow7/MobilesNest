@@ -43,7 +43,7 @@ class ChangePasswordController extends Controller
             'security_question.in' => 'Please select a valid security question.'
         ]);
 
-        $pepper = config('app.pepper', env('PASSWORD_PEPPER', 'your-default-pepper-here'));
+        $pepper = config('app.pepper');
         $user = auth()->user();
         
         $user->update([
@@ -69,7 +69,7 @@ class ChangePasswordController extends Controller
         ]);
 
         $user = auth()->user();
-        $pepper = config('app.pepper', env('PASSWORD_PEPPER', 'your-default-pepper-here'));
+        $pepper = config('app.pepper');
         
         if (Hash::check($request->security_answer . $pepper, $user->security_answer)) {
             RateLimiter::clear($key);
@@ -99,7 +99,7 @@ class ChangePasswordController extends Controller
                 'string',
                 'min:8',
                 'confirmed',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
                 'not_regex:/^(password|123|abc|test)$/i',
                 function ($attribute, $value, $fail) {
                     // Check if password contains common patterns
@@ -191,6 +191,6 @@ class ChangePasswordController extends Controller
         ]);
 
         RateLimiter::clear($key);
-        return redirect()->route('dashboard')->with('success', 'Password changed successfully. Please log in with your new password.');
+        return redirect()->route('dashboard')->with('success', 'Password changed successfully.');
     }
-} 
+}

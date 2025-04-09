@@ -28,34 +28,24 @@ class DashboardController extends Controller
         // Get total revenue
         $totalRevenue = Order::where('status', 'completed')->sum('total_amount');
         
-        // Get recent orders (last 5)
+        // Get recent orders with pagination
         $recentOrders = Order::with('user')
             ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
+            ->paginate(5);
         
         // Get top selling products
-        $topProducts = DB::table('order_items')
-            ->select('product_id', DB::raw('SUM(quantity) as total_sold'))
-            ->groupBy('product_id')
-            ->orderBy('total_sold', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($item) {
-                $product = Product::find($item->product_id);
-                return [
-                    'product' => $product,
-                    'total_sold' => $item->total_sold
-                ];
-            });
+        $topProducts = Product::select('products.*')
+            ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+            ->selectRaw('COALESCE(SUM(order_items.quantity), 0) as total_sold')
+            ->groupBy('products.id')
+            ->orderByDesc('total_sold')
+            ->paginate(5);
         
         // Get low stock products
-        $lowStockProducts = DB::table('inventory')
-            ->join('products', 'inventory.product_id', '=', 'products.id')
-            ->select('products.*', 'inventory.quantity')
-            ->whereRaw('inventory.quantity <= inventory.low_stock_threshold')
-            ->take(5)
-            ->get();
+        $lowStockProducts = Product::select('products.*', 'inventories.quantity')
+            ->join('inventories', 'products.id', '=', 'inventories.product_id')
+            ->whereRaw('inventories.quantity <= inventories.low_stock_threshold')
+            ->paginate(5);
         
         // Get order status distribution
         $orderStatusDistribution = Order::select('status', DB::raw('count(*) as total'))

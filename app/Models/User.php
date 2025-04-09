@@ -22,6 +22,7 @@ class User extends Authenticatable
         'password',
         'security_question',
         'security_answer',
+        'role',
     ];
 
     /**
@@ -43,4 +44,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    
+    /**
+     * Check if the user is an admin.
+     *
+     * @return bool
+     */
+    public function getIsAdminAttribute()
+    {
+        return $this->role === 'admin';
+    }
 }

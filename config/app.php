@@ -98,6 +98,8 @@ return [
     'cipher' => 'AES-256-CBC',
 
     'key' => env('APP_KEY'),
+    
+    'pepper' => env('PASSWORD_PEPPER', 'MobilesNest-SecurePasswordPepper'),
 
     'previous_keys' => [
         ...array_filter(

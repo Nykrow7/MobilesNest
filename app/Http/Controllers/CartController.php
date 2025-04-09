@@ -3,148 +3,144 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
     /**
-     * Display the cart.
+     * Display the user's cart
      */
     public function index()
     {
-        $cart = $this->getCart();
+        $cart = Cart::where('user_id', Auth::id())->with('items.product')->first();
+
         return view('cart.index', compact('cart'));
     }
 
     /**
-     * Add a product to the cart.
+     * Add a product to the cart
+     * @param Request $request
+     * @param Product|null $product
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function addToCart(Request $request)
+    public function add(Request $request, $product = null)
     {
+        // If product is passed in URL, use it; otherwise get from request
+        if ($product) {
+            $productId = $product;
+        } else {
+            $request->validate([
+                'product_id' => 'required|exists:products,id',
+            ]);
+            $productId = $request->product_id;
+        }
+
         $request->validate([
-            'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
+            'buy_now' => 'sometimes|boolean'
         ]);
 
-        $product = Product::findOrFail($request->product_id);
-        $cart = $this->getCart();
+        $product = Product::findOrFail($productId);
 
-        // Check if product is already in cart
+        // Check if product is in stock
+        if ($product->inventory && $product->inventory->quantity < $request->quantity) {
+            return back()->with('error', 'Sorry, this product is out of stock or has insufficient quantity.');
+        }
+
+        // Get or create cart
+        $cart = Cart::firstOrCreate([
+            'user_id' => Auth::id()
+        ]);
+
+        // Check if product already in cart
         $cartItem = $cart->items()->where('product_id', $product->id)->first();
 
         if ($cartItem) {
-            // Update quantity if product already exists in cart
+            // Update quantity if product already in cart
             $cartItem->quantity += $request->quantity;
-            
-            // Get the applicable bulk pricing tier for the new quantity
-            $newUnitPrice = $product->getPriceForQuantity($cartItem->quantity);
-            $cartItem->unit_price = $newUnitPrice;
-            $cartItem->subtotal = $cartItem->quantity * $newUnitPrice;
+            // Update subtotal based on new quantity
+            $cartItem->subtotal = $cartItem->price * $cartItem->quantity;
             $cartItem->save();
         } else {
-            // Get the applicable bulk pricing tier for the quantity
-            $unitPrice = $product->getPriceForQuantity($request->quantity);
-            
             // Add new item to cart
             $cart->items()->create([
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
-                'unit_price' => $unitPrice,
-                'subtotal' => $unitPrice * $request->quantity,
+                'price' => $product->price,
+                'unit_price' => $product->price,
+                'subtotal' => $product->price * $request->quantity
             ]);
         }
 
         // Update cart total
         $cart->updateTotalAmount();
 
-        return redirect()->back()->with('success', 'Product added to cart successfully.');
+        // If buy_now is set, redirect to checkout
+        if ($request->has('buy_now')) {
+            return redirect()->route('checkout.index')->with('success', 'Product added to cart. Proceed with checkout.');
+        }
+
+        return redirect()->route('cart.index')->with('success', 'Product added to cart successfully!');
     }
 
     /**
-     * Update cart item quantity.
+     * Remove an item from the cart
      */
-    public function updateQuantity(Request $request, CartItem $cartItem)
+    public function remove($itemId)
+    {
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if ($cart) {
+            $cart->items()->where('id', $itemId)->delete();
+            $cart->updateTotalAmount();
+            return back()->with('success', 'Item removed from cart.');
+        }
+
+        return back()->with('error', 'Item could not be removed.');
+    }
+
+    /**
+     * Update cart item quantity
+     */
+    public function update(Request $request, $itemId)
     {
         $request->validate([
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1'
         ]);
 
-        // Ensure the cart item belongs to the current user's cart
-        $cart = $this->getCart();
-        if ($cartItem->cart_id !== $cart->id) {
-            return redirect()->route('cart.index')->with('error', 'Unauthorized action.');
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if ($cart) {
+            $cartItem = $cart->items()->findOrFail($itemId);
+            $cartItem->quantity = $request->quantity;
+            $cartItem->subtotal = $cartItem->price * $cartItem->quantity;
+            $cartItem->save();
+
+            // Update cart total
+            $cart->updateTotalAmount();
+
+            return back()->with('success', 'Cart updated successfully.');
         }
 
-        $cartItem->quantity = $request->quantity;
-        
-        // Get the product to check for applicable bulk pricing
-        $product = Product::findOrFail($cartItem->product_id);
-        
-        // Get the applicable bulk pricing tier for the new quantity
-        $newUnitPrice = $product->getPriceForQuantity($cartItem->quantity);
-        $cartItem->unit_price = $newUnitPrice;
-        $cartItem->subtotal = $cartItem->quantity * $newUnitPrice;
-        $cartItem->save();
-
-        // Update cart total
-        $cart->updateTotalAmount();
-
-        return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
+        return back()->with('error', 'Cart could not be updated.');
     }
 
     /**
-     * Remove item from cart.
+     * Clear all items from the cart
      */
-    public function removeItem(CartItem $cartItem)
+    public function clear()
     {
-        // Ensure the cart item belongs to the current user's cart
-        $cart = $this->getCart();
-        if ($cartItem->cart_id !== $cart->id) {
-            return redirect()->route('cart.index')->with('error', 'Unauthorized action.');
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if ($cart) {
+            $cart->items()->delete();
+            $cart->total_amount = 0;
+            $cart->save();
+            return back()->with('success', 'Cart cleared successfully.');
         }
 
-        $cartItem->delete();
-
-        // Update cart total
-        $cart->updateTotalAmount();
-
-        return redirect()->route('cart.index')->with('success', 'Item removed from cart.');
-    }
-
-    /**
-     * Clear the cart.
-     */
-    public function clearCart()
-    {
-        $cart = $this->getCart();
-        $cart->items()->delete();
-        $cart->total_amount = 0;
-        $cart->save();
-
-        return redirect()->route('cart.index')->with('success', 'Cart cleared successfully.');
-    }
-
-    /**
-     * Get the current user's cart or create a new one.
-     */
-    protected function getCart()
-    {
-        if (Auth::check()) {
-            // For authenticated users
-            return Cart::getCurrentCart(Auth::id());
-        } else {
-            // For guests, use session ID
-            $sessionId = Session::get('cart_session_id');
-            if (!$sessionId) {
-                $sessionId = Str::uuid()->toString();
-                Session::put('cart_session_id', $sessionId);
-            }
-            return Cart::getCurrentCart(null, $sessionId);
-        }
+        return back()->with('error', 'Cart could not be cleared.');
     }
 }

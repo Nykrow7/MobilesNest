@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,20 +22,23 @@ class CheckoutController extends Controller
         // Get current user's cart
         $userId = Auth::id();
         $sessionId = session()->getId();
-        
+
         $cart = Cart::getCurrentCart($userId, $sessionId);
-        
+
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('cart.index')
                 ->with('error', 'Your cart is empty. Please add some products before checkout.');
         }
-        
+
         // Load cart items with product information
         $cart->load('items.product');
-        
-        return view('checkout.index', compact('cart'));
+
+        // If user is not logged in, show a message that they need to login to complete checkout
+        $requiresLogin = !Auth::check();
+
+        return view('checkout.index', compact('cart', 'requiresLogin'));
     }
-    
+
     /**
      * Process the checkout and create an order.
      */
@@ -52,24 +56,24 @@ class CheckoutController extends Controller
             'country' => 'required|string|max:100',
             'payment_method' => 'required|string|in:credit_card,paypal,bank_transfer',
         ]);
-        
+
         // Get current user's cart
         $userId = Auth::id();
         $sessionId = session()->getId();
-        
+
         $cart = Cart::getCurrentCart($userId, $sessionId);
-        
+
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('cart.index')
                 ->with('error', 'Your cart is empty. Please add some products before checkout.');
         }
-        
+
         // Load cart items with product information
         $cart->load('items.product');
-        
+
         try {
             DB::beginTransaction();
-            
+
             // Create shipping address string
             $shippingAddress = json_encode([
                 'name' => $validated['name'],
@@ -81,7 +85,7 @@ class CheckoutController extends Controller
                 'postal_code' => $validated['postal_code'],
                 'country' => $validated['country'],
             ]);
-            
+
             // Create order
             $order = new Order([
                 'user_id' => $userId,
@@ -94,46 +98,47 @@ class CheckoutController extends Controller
                 'payment_method' => $validated['payment_method'],
                 'payment_status' => 'pending',
             ]);
-            
+
             $order->save();
-            
+
             // Create order items from cart items
             foreach ($cart->items as $cartItem) {
                 $orderItem = new OrderItem([
                     'order_id' => $order->id,
                     'product_id' => $cartItem->product_id,
                     'quantity' => $cartItem->quantity,
-                    'unit_price' => $cartItem->unit_price,
-                    'subtotal' => $cartItem->subtotal,
+                    'unit_price' => $cartItem->unit_price ?? $cartItem->price,
+                    'subtotal' => $cartItem->subtotal ?? ($cartItem->price * $cartItem->quantity),
                 ]);
-                
+
                 $orderItem->save();
-                
-                // Update product stock
+
+                // Update product inventory
                 $product = $cartItem->product;
-                $product->stock_quantity -= $cartItem->quantity;
-                $product->save();
+                if ($product->inventory) {
+                    $product->inventory->decreaseStock($cartItem->quantity);
+                }
             }
-            
+
             // Clear the cart
             $cart->items()->delete();
             $cart->total_amount = 0;
             $cart->save();
-            
+
             DB::commit();
-            
+
             // Redirect to payment page
             return redirect()->route('checkout.payment', ['order' => $order->id]);
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             return redirect()->back()
                 ->with('error', 'An error occurred while processing your order. Please try again.')
                 ->withInput();
         }
     }
-    
+
     /**
      * Display the payment page for an order.
      */
@@ -143,13 +148,13 @@ class CheckoutController extends Controller
         if (Auth::id() != $order->user_id) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         // Load order items with product information
         $order->load('items.product');
-        
+
         return view('checkout.payment', compact('order'));
     }
-    
+
     /**
      * Display the success page after successful checkout.
      */
@@ -159,10 +164,43 @@ class CheckoutController extends Controller
         if (Auth::id() != $order->user_id) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         // Load order items with product information
         $order->load('items.product', 'transactions');
-        
+
         return view('checkout.success', compact('order'));
+    }
+
+    /**
+     * Process a direct "Buy Now" request
+     */
+    public function buyNow(Request $request)
+    {
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'required|integer|min:1'
+    ]);
+
+    $product = Product::findOrFail($request->product_id);
+
+    // Check if product is in stock
+    if (!$product->inventory || $product->inventory->quantity < $request->quantity) {
+        return back()->with('error', 'Sorry, this product is out of stock or has insufficient quantity.');
+    }
+
+    // Create a temporary cart for this purchase
+    $cart = new Cart();
+    $cart->user_id = Auth::id();
+    $cart->save();
+
+    // Add the product to this cart
+    $cart->items()->create([
+        'product_id' => $product->id,
+        'quantity' => $request->quantity,
+        'price' => $product->price
+    ]);
+
+    // Redirect to checkout with this cart
+    return redirect()->route('checkout.index', ['cart_id' => $cart->id]);
     }
 }

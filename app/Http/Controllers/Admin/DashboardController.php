@@ -23,9 +23,11 @@ class DashboardController extends Controller
         $totalRevenue = Order::where('payment_status', 'paid')->sum('final_amount');
         
         // Get low stock products
-        $lowStockProducts = Product::where('stock_quantity', '<', 10)
-            ->where('is_active', true)
+        $lowStockProducts = Product::join('inventories', 'products.id', '=', 'inventories.product_id')
+            ->where('inventories.quantity', '<', 10)
+            ->where('products.is_active', true)
             ->with('category')
+            ->select('products.*')
             ->limit(5)
             ->get();
         

@@ -23,10 +23,13 @@ class Order extends Model
         'discount_amount',
         'final_amount',
         'status',
+        'shipping_status',
         'shipping_address',
         'payment_method',
         'payment_status',
         'notes',
+        'shipped_at',
+        'delivered_at',
     ];
 
     /**
@@ -38,6 +41,8 @@ class Order extends Model
         'total_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'final_amount' => 'decimal:2',
+        'shipped_at' => 'datetime',
+        'delivered_at' => 'datetime',
     ];
 
     /**
@@ -61,7 +66,7 @@ class Order extends Model
      */
     public function getFormattedTotalAmountAttribute(): string
     {
-        return '$' . number_format($this->total_amount, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->total_amount);
     }
 
     /**
@@ -69,7 +74,7 @@ class Order extends Model
      */
     public function getFormattedDiscountAmountAttribute(): string
     {
-        return '$' . number_format($this->discount_amount, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->discount_amount);
     }
 
     /**
@@ -77,7 +82,7 @@ class Order extends Model
      */
     public function getFormattedFinalAmountAttribute(): string
     {
-        return '$' . number_format($this->final_amount, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->final_amount);
     }
 
     /**
@@ -113,7 +118,23 @@ class Order extends Model
 
         return '<span class="px-2 py-1 rounded-full text-xs font-medium ' . $color . '">' . ucfirst($this->payment_status) . '</span>';
     }
-    
+
+    /**
+     * Get the shipping status badge HTML.
+     */
+    public function getShippingStatusBadgeAttribute(): string
+    {
+        $colors = [
+            'pending' => 'bg-yellow-100 text-yellow-800',
+            'shipped' => 'bg-blue-100 text-blue-800',
+            'delivered' => 'bg-green-100 text-green-800',
+        ];
+
+        $color = $colors[$this->shipping_status] ?? 'bg-gray-100 text-gray-800';
+
+        return '<span class="px-2 py-1 rounded-full text-xs font-medium ' . $color . '">' . ucfirst($this->shipping_status) . '</span>';
+    }
+
     /**
      * Get the total amount as 'total' for backward compatibility.
      */
@@ -121,7 +142,7 @@ class Order extends Model
     {
         return $this->total_amount;
     }
-    
+
     /**
      * Get the transactions for the order.
      */

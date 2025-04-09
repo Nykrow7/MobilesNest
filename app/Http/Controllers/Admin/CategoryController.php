@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class AdminCategoryController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the categories.
@@ -15,7 +16,7 @@ class AdminCategoryController extends Controller
      */
     public function index()
     {
-        $categories = ProductCategory::withCount('products')->paginate(10);
+        $categories = ProductCategory::orderBy('name')->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -38,15 +39,26 @@ class AdminCategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:product_categories,name',
+            'name' => 'required|string|max:255|unique:product_categories',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'boolean',
         ]);
 
-        ProductCategory::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'slug' => Str::slug($validated['name']),
-        ]);
+        // Generate slug from name
+        $validated['slug'] = Str::slug($validated['name']);
+        
+        // Set default active status if not provided
+        $validated['is_active'] = $request->has('is_active') ? true : false;
+
+        // Create the category
+        $category = ProductCategory::create($validated);
+
+        // Handle image upload if provided
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $category->update(['image' => $imagePath]);
+        }
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully.');
@@ -60,7 +72,6 @@ class AdminCategoryController extends Controller
      */
     public function show(ProductCategory $category)
     {
-        $category->load('products');
         return view('admin.categories.show', compact('category'));
     }
 
@@ -87,13 +98,26 @@ class AdminCategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:product_categories,name,' . $category->id,
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'boolean',
         ]);
 
-        $category->update([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
-            'slug' => Str::slug($validated['name']),
-        ]);
+        // Update slug if name has changed
+        if ($category->name !== $validated['name']) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
+        
+        // Set active status
+        $validated['is_active'] = $request->has('is_active') ? true : false;
+
+        // Update the category
+        $category->update($validated);
+
+        // Handle image upload if provided
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $category->update(['image' => $imagePath]);
+        }
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category updated successfully.');

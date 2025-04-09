@@ -15,15 +15,34 @@
             {{ session('success') }}
         </div>
     @endif
+
+    @include('admin.transactions._filters')
     
     <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            Transactions List
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-table me-1"></i>
+                Transactions List
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshTable">
+                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download me-1"></i> Export
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                        <li><a class="dropdown-item" href="#" data-export-type="csv">CSV</a></li>
+                        <li><a class="dropdown-item" href="#" data-export-type="excel">Excel</a></li>
+                        <li><a class="dropdown-item" href="#" data-export-type="pdf">PDF</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="transactionsTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="transactionsTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -70,12 +89,33 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        $('#transactionsTable').DataTable({
-            paging: false,
-            searching: true,
-            ordering: true,
-            info: false,
+        // Initialize sorting functionality
+        const table = $('#transactionsTable').on('click', 'th', function() {
+            const index = $(this).index();
+            const currentUrl = new URL(window.location.href);
+            const sort = currentUrl.searchParams.get('sort') === 'asc' ? 'desc' : 'asc';
+            currentUrl.searchParams.set('sort', sort);
+            currentUrl.searchParams.set('column', index);
+            window.location.href = currentUrl.toString();
         });
+
+        // Refresh button handler
+        $('#refreshTable').on('click', function() {
+            window.location.reload();
+        });
+
+        // Export handlers
+        $('[data-export-type]').on('click', function(e) {
+            e.preventDefault();
+            const exportType = $(this).data('export-type');
+            // Implement export functionality based on type
+            console.log('Export to:', exportType);
+        });
+
+        // Date range picker initialization
+        $('input[type="date"]').on('change', function() {
+            this.form.submit();
+        });}
     });
 </script>
 @endsection

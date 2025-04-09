@@ -65,7 +65,7 @@
                                         @endif
                                     </td>
                                     <td class="py-4 px-4 border-b border-gray-200">
-                                        <form action="{{ route('cart.update-quantity', $item) }}" method="POST" class="flex items-center">
+                                        <form action="{{ route('cart.update', $item) }}" method="POST" class="flex items-center">
                                             @csrf
                                             @method('PATCH')
                                             <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock_quantity }}" class="form-input w-16 rounded-md shadow-sm">
@@ -76,7 +76,7 @@
                                         {{ $item->formatted_subtotal }}
                                     </td>
                                     <td class="py-4 px-4 border-b border-gray-200 text-sm leading-5 font-medium">
-                                        <form action="{{ route('cart.remove-item', $item) }}" method="POST" class="inline">
+                                        <form action="{{ route('cart.remove', $item) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-800">Remove</button>
@@ -103,7 +103,7 @@
                             </button>
                         </form>
                         
-                        <a href="{{ route('checkout') }}" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
+                        <a href="{{ route('checkout.index') }}" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
                             Proceed to Checkout
                         </a>
                     </div>

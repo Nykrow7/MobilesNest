@@ -47,7 +47,7 @@ class Transaction extends Model
      */
     public function getFormattedAmountAttribute(): string
     {
-        return '$' . number_format($this->amount, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->amount);
     }
 
     /**

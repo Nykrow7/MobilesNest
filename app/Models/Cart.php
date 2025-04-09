@@ -52,7 +52,7 @@ class Cart extends Model
      */
     public function getFormattedTotalAmountAttribute(): string
     {
-        return '$' . number_format($this->total_amount, 2);
+        return app(\App\Helpers\CurrencyHelper::class)->formatPeso($this->total_amount);
     }
 
     /**
@@ -65,7 +65,7 @@ class Cart extends Model
         } elseif ($sessionId) {
             return self::firstOrCreate(['session_id' => $sessionId], ['total_amount' => 0]);
         }
-        
+
         return null;
     }
 
@@ -76,7 +76,7 @@ class Cart extends Model
     {
         $this->total_amount = $this->items->sum('subtotal');
         $this->save();
-        
+
         return $this;
     }
 }
