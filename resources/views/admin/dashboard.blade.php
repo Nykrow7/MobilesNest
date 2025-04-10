@@ -77,6 +77,59 @@
             </div>
         </div>
 
+        <!-- Recent Transactions -->
+        <div class="bg-white overflow-hidden shadow-sm rounded-lg mb-8">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Recent Transactions</h2>
+                    <a href="{{ route('admin.transactions.index') }}" class="text-sm text-indigo-600 hover:text-indigo-800">View All</a>
+                </div>
+                @if(isset($recentTransactions) && count($recentTransactions) > 0)
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($recentTransactions as $transaction)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <a href="{{ route('admin.transactions.show', $transaction) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                {{ $transaction->transaction_number }}
+                                            </a>
+                                        </td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $transaction->order->user->name }}
+                                        </td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $transaction->formatted_amount }}
+                                        </td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                            {!! $transaction->status_badge !!}
+                                        </td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $transaction->created_at->format('M d, Y') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-4 text-gray-500">
+                        <p>No recent transactions found.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
         <div class="bg-white overflow-hidden shadow-sm rounded-lg">
             <div class="p-6">
                 <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
@@ -93,7 +146,7 @@
                         </svg>
                         <span class="ml-3 text-green-700">Add New User</span>
                     </a>
-                    <a href="{{ route('admin.inventory.low_stock') }}" class="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors duration-200">
+                    <a href="{{ route('admin.inventory.low-stock') }}" class="flex items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors duration-200">
                         <svg class="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                         </svg>

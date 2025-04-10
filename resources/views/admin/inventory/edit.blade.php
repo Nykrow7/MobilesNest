@@ -1,20 +1,24 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Edit Inventory')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Edit Inventory for {{ $inventory->product->name }}</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-arrow-left"></i> Back to Inventory
-                        </a>
-                    </div>
-                </div>
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-800">Edit Inventory</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-indigo-600 hover:text-indigo-800">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.inventory.index') }}" class="text-indigo-600 hover:text-indigo-800">Inventory</a></li>
+                <li class="breadcrumb-item active text-gray-500">Edit {{ $inventory->product->name }}</li>
+            </ol>
+        </div>
+        <div>
+            <a href="{{ route('admin.inventory.index') }}" class="btn bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg shadow-sm transition duration-150 ease-in-out">
+                <i class="fas fa-arrow-left me-2"></i> Back to Inventory
+            </a>
+        </div>
+    </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
@@ -67,7 +71,7 @@
                                     <form action="{{ route('admin.inventory.update', $inventory->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                        
+
                                         <div class="form-group">
                                             <label for="quantity">Quantity <span class="text-danger">*</span></label>
                                             <input type="number" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity', $inventory->quantity) }}" min="0" required>
@@ -75,7 +79,7 @@
                                                 <span class="invalid-feedback">{{ $message }}</span>
                                             @enderror
                                         </div>
-                                        
+
                                         <div class="form-group">
                                             <label for="low_stock_threshold">Low Stock Threshold <span class="text-danger">*</span></label>
                                             <input type="number" name="low_stock_threshold" id="low_stock_threshold" class="form-control @error('low_stock_threshold') is-invalid @enderror" value="{{ old('low_stock_threshold', $inventory->low_stock_threshold) }}" min="1" required>
@@ -84,7 +88,7 @@
                                             @enderror
                                             <small class="form-text text-muted">When inventory falls below this threshold, it will be marked as low stock.</small>
                                         </div>
-                                        
+
                                         <div class="form-group mt-4">
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fas fa-save"></i> Update Inventory

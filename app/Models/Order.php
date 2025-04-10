@@ -25,6 +25,16 @@ class Order extends Model
         'status',
         'shipping_status',
         'shipping_address',
+        'recipient_name',
+        'recipient_phone',
+        'shipping_city',
+        'shipping_state',
+        'shipping_postal_code',
+        'shipping_country',
+        'shipping_notes',
+        'shipping_method',
+        'estimated_delivery_date',
+        'tracking_number',
         'payment_method',
         'payment_status',
         'notes',
@@ -43,6 +53,7 @@ class Order extends Model
         'final_amount' => 'decimal:2',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'estimated_delivery_date' => 'date',
     ];
 
     /**
@@ -59,6 +70,22 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Get the transaction for the order.
+     */
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
+    }
+
+    /**
+     * Get all transactions for the order.
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 
     /**
@@ -143,11 +170,5 @@ class Order extends Model
         return $this->total_amount;
     }
 
-    /**
-     * Get the transactions for the order.
-     */
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(Transaction::class);
-    }
+
 }

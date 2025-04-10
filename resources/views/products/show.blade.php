@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-8">
     <!-- Breadcrumbs -->
     <div class="flex items-center text-sm text-gray-600 mb-6">
-        <a href="{{ route('welcome') }}" class="hover:text-blue-600">Home</a>
+        <a href="{{ route('shop.index') }}" class="hover:text-blue-600">Shop</a>
         <span class="mx-2">/</span>
         <a href="{{ route('products.index') }}" class="hover:text-blue-600">Products</a>
         <span class="mx-2">/</span>

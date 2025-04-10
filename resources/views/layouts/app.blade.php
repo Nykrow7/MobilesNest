@@ -36,5 +36,8 @@
             @endif
             </main>
         </div>
+
+        <!-- Scripts -->
+        @stack('scripts')
     </body>
 </html>

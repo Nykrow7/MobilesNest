@@ -10,7 +10,7 @@
         <li class="breadcrumb-item"><a href="{{ route('admin.orders.index') }}">Orders</a></li>
         <li class="breadcrumb-item active">Edit Order #{{ $order->order_number }}</li>
     </ol>
-    
+
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-edit me-1"></i>
@@ -20,7 +20,7 @@
             <form action="{{ route('admin.orders.update', $order) }}" method="POST">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -36,7 +36,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="shipping_status" class="form-label">Shipping Status</label>
                             <select class="form-select @error('shipping_status') is-invalid @enderror" id="shipping_status" name="shipping_status">
@@ -48,7 +48,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="tracking_number" class="form-label">Tracking Number</label>
                             <input type="text" class="form-control @error('tracking_number') is-invalid @enderror" id="tracking_number" name="tracking_number" value="{{ old('tracking_number', $order->tracking_number) }}">
@@ -57,7 +57,7 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="notes" class="form-label">Admin Notes</label>
@@ -66,12 +66,32 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="form-label">Shipping Information</label>
                             <div class="card">
                                 <div class="card-body">
-                                    <p class="mb-1"><strong>Address:</strong> {{ $order->shipping_address }}</p>
+                                    <div class="mb-3">
+                                        <label for="estimated_delivery_date" class="form-label">Estimated Delivery Date</label>
+                                        <input type="date" class="form-control @error('estimated_delivery_date') is-invalid @enderror" id="estimated_delivery_date" name="estimated_delivery_date" value="{{ old('estimated_delivery_date', $order->estimated_delivery_date ? $order->estimated_delivery_date->format('Y-m-d') : '') }}">
+                                        @error('estimated_delivery_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <h6 class="mb-2">Recipient Information</h6>
+                                    <p class="mb-1"><strong>Name:</strong> {{ $order->recipient_name }}</p>
+                                    <p class="mb-1"><strong>Phone:</strong> {{ $order->recipient_phone }}</p>
+
+                                    <h6 class="mt-3 mb-2">Address</h6>
+                                    <p class="mb-1">{{ $order->shipping_address }}</p>
+
+                                    @if($order->shipping_notes)
+                                    <h6 class="mt-3 mb-2">Delivery Instructions</h6>
+                                    <p class="mb-1">{{ $order->shipping_notes }}</p>
+                                    @endif
+
+                                    <h6 class="mt-3 mb-2">Dates</h6>
                                     @if($order->shipped_at)
                                         <p class="mb-1"><strong>Shipped Date:</strong> {{ $order->shipped_at->format('M d, Y') }}</p>
                                     @endif
@@ -83,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <h5>Order Items</h5>
                     <div class="table-responsive">
@@ -115,7 +135,7 @@
                         </table>
                     </div>
                 </div>
-                
+
                 <div class="d-flex justify-content-between">
                     <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary">Update Order</button>

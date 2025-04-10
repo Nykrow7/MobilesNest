@@ -21,7 +21,7 @@ class DashboardController extends Controller
         $totalOrders = Order::count();
         $totalCustomers = User::where('role', 'customer')->count();
         $totalRevenue = Order::where('payment_status', 'paid')->sum('final_amount');
-        
+
         // Get low stock products
         $lowStockProducts = Product::join('inventories', 'products.id', '=', 'inventories.product_id')
             ->where('inventories.quantity', '<', 10)
@@ -30,13 +30,19 @@ class DashboardController extends Controller
             ->select('products.*')
             ->limit(5)
             ->get();
-        
+
         // Get recent orders
         $recentOrders = Order::with('user')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
-        
+
+        // Get recent transactions
+        $recentTransactions = \App\Models\Transaction::with(['order.user'])
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
         // Get sales by category
         $salesByCategory = DB::table('order_items')
             ->join('products', 'order_items.product_id', '=', 'products.id')
@@ -46,7 +52,7 @@ class DashboardController extends Controller
             ->orderBy('total', 'desc')
             ->limit(5)
             ->get();
-        
+
         // Get top selling products
         $topProducts = DB::table('order_items')
             ->join('products', 'order_items.product_id', '=', 'products.id')
@@ -55,14 +61,15 @@ class DashboardController extends Controller
             ->orderBy('total_quantity', 'desc')
             ->limit(5)
             ->get();
-        
+
         return view('admin.dashboard', compact(
             'totalProducts',
-            'totalOrders', 
+            'totalOrders',
             'totalCustomers',
             'totalRevenue',
             'lowStockProducts',
             'recentOrders',
+            'recentTransactions',
             'salesByCategory',
             'topProducts'
         ));

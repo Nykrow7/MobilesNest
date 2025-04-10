@@ -28,11 +28,17 @@
                 <!-- Shipping Information -->
                 <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                     <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
+                    <p class="text-sm text-gray-500 mb-4">Please provide accurate shipping details to ensure smooth delivery.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Billing Information -->
+                        <div class="md:col-span-2 mb-2">
+                            <h3 class="text-lg font-medium text-gray-800">Billing Information</h3>
+                        </div>
+
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                            <input type="text" id="name" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="text" id="name" name="name" value="{{ old('name', auth()->user()->name ?? '') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -40,7 +46,7 @@
 
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                            <input type="email" id="email" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="email" id="email" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('email')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -48,15 +54,46 @@
 
                         <div>
                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                            <input type="text" id="phone" name="phone" value="{{ old('phone') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="text" id="phone" name="phone" value="{{ old('phone') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('phone')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
+                        <!-- Shipping Recipient Information -->
+                        <div class="md:col-span-2 mt-4 mb-2">
+                            <h3 class="text-lg font-medium text-gray-800">Recipient Information</h3>
+                            <div class="flex items-center mt-2">
+                                <input type="checkbox" id="same_as_billing" name="same_as_billing" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" checked>
+                                <label for="same_as_billing" class="ml-2 block text-sm text-gray-700">Same as billing information</label>
+                            </div>
+                        </div>
+
+                        <div id="recipient_fields" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4" style="display: none;">
+                            <div>
+                                <label for="recipient_name" class="block text-sm font-medium text-gray-700 mb-1">Recipient Name</label>
+                                <input type="text" id="recipient_name" name="recipient_name" value="{{ old('recipient_name') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                @error('recipient_name')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="recipient_phone" class="block text-sm font-medium text-gray-700 mb-1">Recipient Phone</label>
+                                <input type="text" id="recipient_phone" name="recipient_phone" value="{{ old('recipient_phone') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                @error('recipient_phone')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Shipping Address -->
+                        <div class="md:col-span-2 mt-4 mb-2">
+                            <h3 class="text-lg font-medium text-gray-800">Shipping Address</h3>
+                        </div>
+
                         <div>
                             <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-                            <input type="text" id="address" name="address" value="{{ old('address') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="text" id="address" name="address" value="{{ old('address') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('address')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -64,7 +101,7 @@
 
                         <div>
                             <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                            <input type="text" id="city" name="city" value="{{ old('city') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="text" id="city" name="city" value="{{ old('city') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('city')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -72,7 +109,7 @@
 
                         <div>
                             <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
-                            <input type="text" id="state" name="state" value="{{ old('state') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="text" id="state" name="state" value="{{ old('state') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('state')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -80,7 +117,7 @@
 
                         <div>
                             <label for="postal_code" class="block text-sm font-medium text-gray-700 mb-1">Postal/ZIP Code</label>
-                            <input type="text" id="postal_code" name="postal_code" value="{{ old('postal_code') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="text" id="postal_code" name="postal_code" value="{{ old('postal_code') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('postal_code')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -88,8 +125,16 @@
 
                         <div>
                             <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                            <input type="text" id="country" name="country" value="{{ old('country', 'Philippines') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="text" id="country" name="country" value="{{ old('country', 'Philippines') }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                             @error('country')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label for="shipping_notes" class="block text-sm font-medium text-gray-700 mb-1">Delivery Instructions (Optional)</label>
+                            <textarea id="shipping_notes" name="shipping_notes" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('shipping_notes') }}</textarea>
+                            @error('shipping_notes')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -187,3 +232,33 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle recipient information toggle
+        const sameAsBillingCheckbox = document.getElementById('same_as_billing');
+        const recipientFields = document.getElementById('recipient_fields');
+        const recipientName = document.getElementById('recipient_name');
+        const recipientPhone = document.getElementById('recipient_phone');
+
+        function toggleRecipientFields() {
+            if (sameAsBillingCheckbox.checked) {
+                recipientFields.style.display = 'none';
+                recipientName.required = false;
+                recipientPhone.required = false;
+            } else {
+                recipientFields.style.display = 'grid';
+                recipientName.required = true;
+                recipientPhone.required = true;
+            }
+        }
+
+        // Initial state
+        toggleRecipientFields();
+
+        // Handle checkbox change
+        sameAsBillingCheckbox.addEventListener('change', toggleRecipientFields);
+    });
+</script>
+@endpush

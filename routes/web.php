@@ -106,13 +106,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('transactions', AdminTransactionController::class);
 
     // Inventory management
-    Route::name('inventory.')->group(function () {
-        Route::get('inventory', [InventoryController::class, 'index']);
-        Route::get('inventory/{id}/edit', [InventoryController::class, 'edit']);
-        Route::put('inventory/{id}', [InventoryController::class, 'update']);
-        Route::post('inventory/{id}/adjust', [InventoryController::class, 'adjustQuantity']);
-        Route::get('inventory/low-stock', [InventoryController::class, 'lowStock'])->name('low_stock');
-        Route::get('inventory/export', [InventoryController::class, 'export']);
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [InventoryController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [InventoryController::class, 'update'])->name('update');
+        Route::post('/{id}/adjust', [InventoryController::class, 'adjustQuantity'])->name('adjust');
+        Route::get('/low-stock', [InventoryController::class, 'lowStock'])->name('low-stock');
+        Route::get('/export', [InventoryController::class, 'export'])->name('export');
     });
 }); // End of admin routes group
 

@@ -82,6 +82,7 @@ class AdminOrderController extends Controller
             'shipping_status' => 'required|in:pending,shipped,delivered',
             'tracking_number' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
+            'estimated_delivery_date' => 'nullable|date',
         ]);
 
         // If cancelling an order that was previously not cancelled, adjust inventory

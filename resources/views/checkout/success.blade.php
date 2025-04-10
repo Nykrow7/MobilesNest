@@ -14,7 +14,7 @@
             <h1 class="text-2xl font-bold text-gray-800">Order Successful!</h1>
             <p class="text-gray-600 mt-2">Thank you for your purchase. Your order has been received.</p>
         </div>
-        
+
         <div class="border-t border-gray-200 pt-4 mb-6">
             <div class="flex justify-between items-center mb-2">
                 <span class="text-gray-600">Order Number:</span>
@@ -39,9 +39,9 @@
                 </div>
             @endif
         </div>
-        
+
         <h2 class="text-xl font-semibold mb-4">Order Details</h2>
-        
+
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead>
@@ -97,9 +97,9 @@
                 </tfoot>
             </table>
         </div>
-        
+
         <div class="mt-8 text-center">
-            <a href="{{ route('home') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <a href="{{ route('shop.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                 </svg>

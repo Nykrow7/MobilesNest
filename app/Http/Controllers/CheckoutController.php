@@ -55,6 +55,9 @@ class CheckoutController extends Controller
             'postal_code' => 'required|string|max:20',
             'country' => 'required|string|max:100',
             'payment_method' => 'required|string|in:credit_card,paypal,bank_transfer',
+            'recipient_name' => 'nullable|required_without:same_as_billing|string|max:255',
+            'recipient_phone' => 'nullable|required_without:same_as_billing|string|max:20',
+            'shipping_notes' => 'nullable|string|max:500',
         ]);
 
         // Get current user's cart
@@ -74,17 +77,12 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
-            // Create shipping address string
-            $shippingAddress = json_encode([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'phone' => $validated['phone'],
-                'address' => $validated['address'],
-                'city' => $validated['city'],
-                'state' => $validated['state'],
-                'postal_code' => $validated['postal_code'],
-                'country' => $validated['country'],
-            ]);
+            // Determine recipient information
+            $recipientName = isset($validated['same_as_billing']) ? $validated['name'] : $validated['recipient_name'];
+            $recipientPhone = isset($validated['same_as_billing']) ? $validated['phone'] : $validated['recipient_phone'];
+
+            // Create shipping address
+            $shippingAddress = $validated['address'] . ', ' . $validated['city'] . ', ' . $validated['state'] . ', ' . $validated['postal_code'] . ', ' . $validated['country'];
 
             // Create order
             $order = new Order([
@@ -94,9 +92,18 @@ class CheckoutController extends Controller
                 'discount_amount' => 0, // Apply any discounts here
                 'final_amount' => $cart->total_amount, // Adjust for discounts
                 'status' => 'pending',
+                'shipping_status' => 'pending',
                 'shipping_address' => $shippingAddress,
+                'recipient_name' => $recipientName,
+                'recipient_phone' => $recipientPhone,
+                'shipping_city' => $validated['city'],
+                'shipping_state' => $validated['state'],
+                'shipping_postal_code' => $validated['postal_code'],
+                'shipping_country' => $validated['country'],
+                'shipping_notes' => $validated['shipping_notes'] ?? null,
                 'payment_method' => $validated['payment_method'],
                 'payment_status' => 'pending',
+                'estimated_delivery_date' => now()->addDays(5), // Default to 5 days delivery estimate
             ]);
 
             $order->save();

@@ -8,7 +8,7 @@
         <!-- Payment Form -->
         <div class="md:w-2/3">
             <h1 class="text-2xl font-bold mb-6">Payment Details</h1>
-            
+
             @if (session('error'))
                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
                     <p>{{ session('error') }}</p>
@@ -17,11 +17,11 @@
 
             <form action="{{ route('transactions.process', $order) }}" method="POST" id="payment-form">
                 @csrf
-                
+
                 <!-- Payment Information -->
                 <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                     <h2 class="text-xl font-semibold mb-4">Payment Method: {{ ucfirst($order->payment_method) }}</h2>
-                    
+
                     @if ($order->payment_method === 'credit_card')
                         <div class="space-y-4">
                             <div>
@@ -31,7 +31,7 @@
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                            
+
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label for="card_expiry" class="block text-sm font-medium text-gray-700">Expiration Date</label>
@@ -40,7 +40,7 @@
 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
-                                
+
                                 <div>
                                     <label for="card_cvv" class="block text-sm font-medium text-gray-700">CVV</label>
                                     <input type="password" name="card_cvv" id="card_cvv" placeholder="123" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required maxlength="4" pattern="\d{3,4}">
@@ -49,7 +49,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label for="card_name" class="block text-sm font-medium text-gray-700">Name on Card</label>
                                 <input type="text" name="card_name" id="card_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required pattern="[A-Za-z\s]+" maxlength="255">
@@ -75,7 +75,7 @@
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                            
+
                             <div>
                                 <label for="reference" class="block text-sm font-medium text-gray-700">Reference Number</label>
                                 <input type="text" name="reference" id="reference" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required pattern="[A-Za-z0-9-]+" maxlength="50">
@@ -83,7 +83,7 @@
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                            
+
                             <div class="bg-yellow-50 p-4 rounded-md">
                                 <p class="text-sm text-yellow-700">
                                     Please make a bank transfer to the following account and provide the reference number above:
@@ -99,12 +99,12 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <div class="flex justify-between items-center">
                     <a href="{{ route('checkout.index') }}" class="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                         Back to Shipping
                     </a>
-                    
+
                     <button type="submit" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         Complete Payment
                     </button>
@@ -114,3 +114,26 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentForm = document.getElementById('payment-form');
+
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+
+            // Submit the form
+            setTimeout(() => {
+                this.submit();
+            }, 500);
+        });
+    });
+</script>
+@endpush

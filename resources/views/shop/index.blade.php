@@ -1,14 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Success Message -->
+@if (session('success'))
+<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+    <div class="flex items-center">
+        <div class="py-1"><i class="fas fa-check-circle text-green-500 mr-2"></i></div>
+        <div>
+            <p class="font-medium">{{ session('success') }}</p>
+            @if(session('last_transaction_id'))
+            <p class="text-sm mt-1">
+                Your transaction has been recorded. An administrator will process your order shortly.
+            </p>
+            @endif
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- Hero Section -->
-<div class="relative bg-gradient-to-r from-blue-900 to-blue-600 text-white">
+<div class="relative bg-gradient-to-r from-blue-900 to-blue-600">
     <div class="container mx-auto px-4 py-16 md:py-24">
         <div class="max-w-3xl">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Discover the Latest Smartphones</h1>
-            <p class="text-xl mb-8 opacity-90">Find the perfect device that matches your style and needs</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-black !text-black" style="color: black !important;">Discover the Latest Smartphones</h1>
+            <p class="text-xl mb-8 text-black !text-black" style="color: black !important;">Find the perfect device that matches your style and needs</p>
             <div class="flex space-x-4">
-                <a href="#phone-grid" class="bg-white text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-semibold transition duration-200 inline-flex items-center">
+                <a href="#phone-grid" class="bg-white text-black !text-black hover:bg-blue-50 px-6 py-3 rounded-lg font-semibold transition duration-200 inline-flex items-center" style="color: black !important;">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                         <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
@@ -49,17 +66,26 @@
                                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <input type="text" id="search" name="search" value="{{ request('search') }}" placeholder="Search phones..." class="pl-10 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <input type="text" id="search" name="search" value="{{ request('search') }}" placeholder="Search by name, brand, specs..." class="pl-10 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                         </div>
+                        <p class="text-xs text-gray-500 mt-1">Try searching for brand names, features, or specifications like "Samsung", "5G", "camera", etc.</p>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
-                        </svg>
-                        Apply Filters
-                    </button>
+                    <!-- Submit and Clear Buttons -->
+                    <div class="flex gap-2">
+                        <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                            </svg>
+                            Apply Filters
+                        </button>
+                        <a href="{{ route('shop.index') }}" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                            </svg>
+                            Clear Filters
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>
