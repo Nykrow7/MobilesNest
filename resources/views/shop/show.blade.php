@@ -99,44 +99,43 @@
                 @php
                     $specs = json_decode($phone->description, true);
                     $specs = $specs['specs'] ?? [];
+
+                    // Define key specs to display in the summary
+                    $keySpecs = [
+                        'processor' => ['icon' => 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z', 'label' => 'Processor'],
+                        'memory' => ['icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'label' => 'Memory'],
+                        'display' => ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'label' => 'Display'],
+                        'camera' => ['icon' => 'M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z', 'label' => 'Camera'],
+                        'battery' => ['icon' => 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15', 'label' => 'Battery'],
+                        'os' => ['icon' => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'label' => 'OS']
+                    ];
                 @endphp
                 @if(!empty($specs))
-                <div class="mb-6 bg-white p-4 rounded-lg border border-gray-200">
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Key Features</h3>
-                    <ul class="space-y-2 text-sm">
-                        @if(isset($specs['processor']))
-                            <li class="flex items-start">
-                                <svg class="w-4 h-4 text-indigo-500 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span><span class="font-medium">Processor:</span> {{ $specs['processor'] }}</span>
-                            </li>
-                        @endif
-                        @if(isset($specs['memory']))
-                            <li class="flex items-start">
-                                <svg class="w-4 h-4 text-indigo-500 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span><span class="font-medium">Memory:</span> {{ $specs['memory'] }}</span>
-                            </li>
-                        @endif
-                        @if(isset($specs['display']))
-                            <li class="flex items-start">
-                                <svg class="w-4 h-4 text-indigo-500 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span><span class="font-medium">Display:</span> {{ $specs['display'] }}</span>
-                            </li>
-                        @endif
-                        @if(isset($specs['camera']))
-                            <li class="flex items-start">
-                                <svg class="w-4 h-4 text-indigo-500 mt-0.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span><span class="font-medium">Camera:</span> {{ $specs['camera'] }}</span>
-                            </li>
-                        @endif
-                    </ul>
+                <div class="mb-6 bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                    <h3 class="text-sm font-semibold text-indigo-700 uppercase mb-4 tracking-wider flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Key Specifications
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach($keySpecs as $key => $specInfo)
+                            @if(isset($specs[$key]))
+                                <div class="flex items-start p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-150">
+                                    <div class="flex-shrink-0 bg-indigo-100 p-2 rounded-md mr-3">
+                                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $specInfo['icon'] }}"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase">{{ $specInfo['label'] }}</p>
+                                        <p class="font-medium text-gray-800">{{ $specs[$key] }}</p>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
                 </div>
                 @endif
 
@@ -178,17 +177,67 @@
 
                 <!-- Specifications -->
                 <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Full Specifications</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Technical Specifications
+                    </h2>
                     @if(!empty($specs))
-                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                        <!-- Group specifications by category -->
+                        @php
+                            $specCategories = [
+                                'general' => ['brand', 'model', 'release_date', 'os', 'color'],
+                                'display' => ['display', 'screen_size', 'resolution', 'refresh_rate', 'protection'],
+                                'performance' => ['processor', 'memory', 'ram', 'storage', 'gpu'],
+                                'camera' => ['camera', 'front_camera', 'rear_camera', 'video', 'features'],
+                                'battery' => ['battery', 'charging', 'fast_charging'],
+                                'connectivity' => ['wifi', 'bluetooth', 'nfc', 'usb', 'network', '5g'],
+                                'other' => []
+                            ];
+
+                            // Categorize specs
+                            $categorizedSpecs = [];
+                            foreach ($specCategories as $category => $keys) {
+                                $categorizedSpecs[$category] = [];
+                            }
+
+                            foreach ($specs as $key => $value) {
+                                $assigned = false;
+                                foreach ($specCategories as $category => $keys) {
+                                    if (in_array($key, $keys)) {
+                                        $categorizedSpecs[$category][$key] = $value;
+                                        $assigned = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!$assigned) {
+                                    $categorizedSpecs['other'][$key] = $value;
+                                }
+                            }
+                        @endphp
+
+                        <!-- Display specs by category -->
                         <div class="divide-y divide-gray-200">
-                            @foreach($specs as $key => $value)
-                            <div class="flex py-3 px-4 hover:bg-gray-50">
-                                <span class="font-medium text-gray-700 w-1/3">{{ ucfirst(str_replace('_', ' ', $key)) }}</span>
-                                <span class="w-2/3 text-gray-600">{{ is_array($value) ? implode(', ', $value) : $value }}</span>
-                            </div>
+                            @foreach($categorizedSpecs as $category => $categorySpecs)
+                                @if(count($categorySpecs) > 0)
+                                    <div class="bg-gray-50 py-2 px-4 font-semibold text-indigo-700 uppercase text-sm tracking-wider">
+                                        {{ ucfirst($category) }}
+                                    </div>
+                                    @foreach($categorySpecs as $key => $value)
+                                        <div class="flex py-3 px-4 hover:bg-gray-50">
+                                            <span class="font-medium text-gray-700 w-1/3">{{ ucfirst(str_replace('_', ' ', $key)) }}</span>
+                                            <span class="w-2/3 text-gray-600">{{ is_array($value) ? implode(', ', $value) : $value }}</span>
+                                        </div>
+                                    @endforeach
+                                @endif
                             @endforeach
                         </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500 italic">
+                        <p>* Specifications are subject to change without notice. Please check with the manufacturer for the most up-to-date information.</p>
                     </div>
                     @else
                     <p class="text-gray-600 bg-white p-4 rounded-lg border border-gray-200">No specifications available</p>

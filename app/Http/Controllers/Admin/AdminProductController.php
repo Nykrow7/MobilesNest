@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Inventory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
@@ -38,7 +40,18 @@ class AdminProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        // Remove stock from validated data as it's not a column in products table
+        $stockQuantity = $validated['stock'];
+        unset($validated['stock']);
+
+        // Create product
         $product = Product::create($validated);
+
+        // Create inventory record
+        $product->inventory()->create([
+            'quantity' => $stockQuantity,
+            'low_stock_threshold' => 5
+        ]);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
@@ -78,7 +91,25 @@ class AdminProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        // Remove stock from validated data as it's not a column in products table
+        $stockQuantity = $validated['stock'];
+        unset($validated['stock']);
+
+        // Update product details
         $product->update($validated);
+
+        // Update inventory
+        if ($product->inventory) {
+            $product->inventory->update([
+                'quantity' => $stockQuantity
+            ]);
+        } else {
+            // Create inventory record if it doesn't exist
+            $product->inventory()->create([
+                'quantity' => $stockQuantity,
+                'low_stock_threshold' => 5
+            ]);
+        }
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');

@@ -35,7 +35,7 @@ class OrderController extends Controller
         // Validate request
         $request->validate([
             'shipping_address' => 'required|string|max:500',
-            'payment_method' => 'required|in:credit_card,paypal,cash_on_delivery',
+            'payment_method' => 'required|in:gcash,cash_on_delivery',
             // Add more validation rules as needed
         ]);
 

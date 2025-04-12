@@ -20,81 +20,62 @@
 
                 <!-- Payment Information -->
                 <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                    <h2 class="text-xl font-semibold mb-4">Payment Method: {{ ucfirst($order->payment_method) }}</h2>
+                    <h2 class="text-xl font-semibold mb-4">Payment Method: {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}</h2>
 
-                    @if ($order->payment_method === 'credit_card')
+                    @if ($order->payment_method === 'gcash')
                         <div class="space-y-4">
-                            <div>
-                                <label for="card_number" class="block text-sm font-medium text-gray-700">Card Number</label>
-                                <input type="text" name="card_number" id="card_number" placeholder="1234 5678 9012 3456" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required maxlength="19" pattern="\d{4}\s?\d{4}\s?\d{4}\s?\d{4}">
-                                @error('card_number')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label for="card_expiry" class="block text-sm font-medium text-gray-700">Expiration Date</label>
-                                    <input type="text" name="card_expiry" id="card_expiry" placeholder="MM/YY" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required maxlength="5" pattern="(0[1-9]|1[0-2])\/([0-9]{2})">
-                                    @error('card_expiry')
-<p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
+                            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold mr-2">GCash</span>
+                                    <h3 class="text-blue-800 font-medium">GCash Payment Instructions</h3>
                                 </div>
+                                <ol class="list-decimal pl-5 text-sm text-blue-800 space-y-2">
+                                    <li>Open your GCash app on your mobile phone</li>
+                                    <li>Send payment to GCash number: <strong>09123456789</strong></li>
+                                    <li>Enter the exact amount: <strong>₱{{ number_format($order->final_amount, 2) }}</strong></li>
+                                    <li>Use your Order Number <strong>{{ $order->order_number }}</strong> as reference</li>
+                                    <li>Enter your GCash number and reference number below to complete your order</li>
+                                </ol>
+                            </div>
 
-                                <div>
-                                    <label for="card_cvv" class="block text-sm font-medium text-gray-700">CVV</label>
-                                    <input type="password" name="card_cvv" id="card_cvv" placeholder="123" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required maxlength="4" pattern="\d{3,4}">
-                                    @error('card_cvv')
-                                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                    @enderror
+                            <div>
+                                <label for="gcash_number" class="block text-sm font-medium text-gray-700">Your GCash Number</label>
+                                <div class="mt-1 flex rounded-md shadow-sm">
+                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">+63</span>
+                                    <input type="text" name="gcash_number" id="gcash_number" placeholder="9123456789" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" required maxlength="10" pattern="[0-9]{10}">
                                 </div>
-                            </div>
-
-                            <div>
-                                <label for="card_name" class="block text-sm font-medium text-gray-700">Name on Card</label>
-                                <input type="text" name="card_name" id="card_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required pattern="[A-Za-z\s]+" maxlength="255">
-                                @error('card_name')
-                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-                    @elseif ($order->payment_method === 'paypal')
-                        <div>
-                            <label for="paypal_email" class="block text-sm font-medium text-gray-700">PayPal Email</label>
-                            <input type="email" name="paypal_email" id="paypal_email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                            @error('paypal_email')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-                    @elseif ($order->payment_method === 'bank_transfer')
-                        <div class="space-y-4">
-                            <div>
-                                <label for="bank_name" class="block text-sm font-medium text-gray-700">Bank Name</label>
-                                <input type="text" name="bank_name" id="bank_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required pattern="[A-Za-z\s]+" maxlength="100">
-                                @error('bank_name')
+                                @error('gcash_number')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div>
-                                <label for="reference" class="block text-sm font-medium text-gray-700">Reference Number</label>
-                                <input type="text" name="reference" id="reference" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required pattern="[A-Za-z0-9-]+" maxlength="50">
+                                <label for="reference" class="block text-sm font-medium text-gray-700">GCash Reference Number</label>
+                                <input type="text" name="reference" id="reference" placeholder="e.g. 1234567890" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required maxlength="50">
+                                <p class="text-xs text-gray-500 mt-1">The reference number provided by GCash after your payment</p>
                                 @error('reference')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-
-                            <div class="bg-yellow-50 p-4 rounded-md">
-                                <p class="text-sm text-yellow-700">
-                                    Please make a bank transfer to the following account and provide the reference number above:
-                                </p>
-                                <ul class="mt-2 text-sm text-yellow-700 list-disc list-inside">
-                                    <li>Bank: Example Bank</li>
-                                    <li>Account Name: MobilesNest</li>
-                                    <li>Account Number: 1234567890</li>
-                                    <li>Sort Code: 12-34-56</li>
-                                    <li>Reference: {{ $order->order_number }}</li>
+                        </div>
+                    @elseif ($order->payment_method === 'cash_on_delivery')
+                        <div class="space-y-4">
+                            <div class="bg-green-50 p-4 rounded-lg mb-4">
+                                <div class="flex items-center mb-3">
+                                    <span class="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold mr-2">COD</span>
+                                    <h3 class="text-green-800 font-medium">Cash on Delivery Information</h3>
+                                </div>
+                                <ul class="list-disc pl-5 text-sm text-green-800 space-y-2">
+                                    <li>Your order will be delivered to your shipping address</li>
+                                    <li>Payment of <strong>₱{{ number_format($order->final_amount, 2) }}</strong> will be collected upon delivery</li>
+                                    <li>Please prepare the exact amount if possible</li>
+                                    <li>You can add delivery instructions below</li>
                                 </ul>
+                            </div>
+
+                            <div>
+                                <label for="notes" class="block text-sm font-medium text-gray-700">Delivery Instructions (Optional)</label>
+                                <textarea name="notes" id="notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" maxlength="255" placeholder="Special instructions for delivery (e.g., landmark, preferred delivery time)"></textarea>
                             </div>
                         </div>
                     @endif

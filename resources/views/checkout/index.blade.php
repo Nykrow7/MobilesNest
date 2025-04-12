@@ -147,23 +147,18 @@
 
                     <div class="space-y-4">
                         <div class="flex items-center">
-                            <input id="payment_method_credit_card" name="payment_method" type="radio" value="credit_card" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" {{ old('payment_method') == 'credit_card' ? 'checked' : '' }} required>
-                            <label for="payment_method_credit_card" class="ml-3 block text-sm font-medium text-gray-700">
-                                Credit Card
+                            <input id="payment_method_gcash" name="payment_method" type="radio" value="gcash" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" {{ old('payment_method') == 'gcash' ? 'checked' : '' }} required>
+                            <label for="payment_method_gcash" class="ml-3 block text-sm font-medium text-gray-700 flex items-center">
+                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold mr-2">GCash</span>
+                                GCash Mobile Payment
                             </label>
                         </div>
 
                         <div class="flex items-center">
-                            <input id="payment_method_paypal" name="payment_method" type="radio" value="paypal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" {{ old('payment_method') == 'paypal' ? 'checked' : '' }}>
-                            <label for="payment_method_paypal" class="ml-3 block text-sm font-medium text-gray-700">
-                                PayPal
-                            </label>
-                        </div>
-
-                        <div class="flex items-center">
-                            <input id="payment_method_bank_transfer" name="payment_method" type="radio" value="bank_transfer" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" {{ old('payment_method') == 'bank_transfer' ? 'checked' : '' }}>
-                            <label for="payment_method_bank_transfer" class="ml-3 block text-sm font-medium text-gray-700">
-                                Bank Transfer
+                            <input id="payment_method_cash_on_delivery" name="payment_method" type="radio" value="cash_on_delivery" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" {{ old('payment_method') == 'cash_on_delivery' ? 'checked' : '' }}>
+                            <label for="payment_method_cash_on_delivery" class="ml-3 block text-sm font-medium text-gray-700 flex items-center">
+                                <span class="bg-green-500 text-white px-2 py-1 rounded text-xs font-bold mr-2">COD</span>
+                                Cash on Delivery
                             </label>
                         </div>
                     </div>

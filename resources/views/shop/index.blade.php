@@ -3,19 +3,47 @@
 @section('content')
 <!-- Success Message -->
 @if (session('success'))
-<div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-    <div class="flex items-center">
-        <div class="py-1"><i class="fas fa-check-circle text-green-500 mr-2"></i></div>
-        <div>
-            <p class="font-medium">{{ session('success') }}</p>
-            @if(session('last_transaction_id'))
-            <p class="text-sm mt-1">
-                Your transaction has been recorded. An administrator will process your order shortly.
-            </p>
-            @endif
+<div class="fixed top-20 left-0 right-0 mx-auto max-w-3xl z-50 bg-green-100 border border-green-500 text-green-700 p-4 rounded-lg shadow-lg" role="alert" id="success-message">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="py-1"><i class="fas fa-check-circle text-green-500 mr-2 text-xl"></i></div>
+            <div>
+                <p class="font-medium text-lg">{{ session('success') }}</p>
+                @if(session('last_transaction_id'))
+                <p class="text-sm mt-1">
+                    Your transaction has been recorded. An administrator will process your order shortly.
+                </p>
+                @endif
+            </div>
         </div>
+        <button type="button" class="text-green-700 hover:text-green-900" onclick="document.getElementById('success-message').remove()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
 </div>
+
+<script>
+    // Auto-scroll to phone grid and auto-dismiss success message after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('success-message')) {
+            // Scroll to phone grid
+            document.getElementById('phone-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(function() {
+                const message = document.getElementById('success-message');
+                if (message) {
+                    message.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                    setTimeout(function() {
+                        if (message.parentNode) {
+                            message.remove();
+                        }
+                    }, 500);
+                }
+            }, 5000);
+        }
+    });
+</script>
 @endif
 
 <!-- Hero Section -->
@@ -99,6 +127,7 @@
             </div>
 
             <!-- Phones Grid -->
+            <div id="phone-grid">
             @if($phones->isNotEmpty())
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($phones as $phone)
@@ -195,6 +224,7 @@
                 <a href="{{ route('shop.index') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">Clear all filters</a>
             </div>
             @endif
+        </div>
         </div>
     </div>
 </div>

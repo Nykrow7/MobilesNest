@@ -54,7 +54,7 @@ class CheckoutController extends Controller
             'state' => 'required|string|max:100',
             'postal_code' => 'required|string|max:20',
             'country' => 'required|string|max:100',
-            'payment_method' => 'required|string|in:credit_card,paypal,bank_transfer',
+            'payment_method' => 'required|string|in:gcash,cash_on_delivery',
             'recipient_name' => 'nullable|required_without:same_as_billing|string|max:255',
             'recipient_phone' => 'nullable|required_without:same_as_billing|string|max:20',
             'shipping_notes' => 'nullable|string|max:500',

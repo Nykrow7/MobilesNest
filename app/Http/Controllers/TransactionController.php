@@ -50,10 +50,8 @@ class TransactionController extends Controller
     {
         // Validate request
         $validated = $request->validate([
-            'payment_method' => 'required|string|in:credit_card,paypal,bank_transfer',
-            'card_number' => 'required_if:payment_method,credit_card',
-            'card_expiry' => 'required_if:payment_method,credit_card',
-            'card_cvv' => 'required_if:payment_method,credit_card',
+            'payment_method' => 'required|string|in:gcash,cash_on_delivery',
+            'gcash_number' => 'required_if:payment_method,gcash',
         ]);
 
         try {
@@ -104,10 +102,10 @@ class TransactionController extends Controller
                 session(['last_transaction_id' => $transaction->id]);
 
                 // Flash a success message with transaction details
-                $successMessage = 'Payment completed successfully! Your order #' . $order->order_number . ' has been placed. ' .
+                $successMessage = 'Order Successful! Your order #' . $order->order_number . ' has been placed. ' .
                                  'Transaction #' . $transaction->transaction_number . ' has been recorded.';
 
-                // Redirect to shop page
+                // Redirect to shop phones page
                 return redirect()->route('shop.index')
                     ->with('success', $successMessage);
             } else {
@@ -148,25 +146,16 @@ class TransactionController extends Controller
         $details = [];
 
         switch ($request->payment_method) {
-            case 'credit_card':
-                // In a real application, you would never store full card details
-                // This is just for demonstration purposes
+            case 'gcash':
                 $details = [
-                    'card_number' => substr($request->card_number, -4), // Only store last 4 digits
-                    'card_expiry' => $request->card_expiry,
+                    'gcash_number' => $request->gcash_number,
+                    'reference' => $request->reference ?? null,
                 ];
                 break;
 
-            case 'paypal':
+            case 'cash_on_delivery':
                 $details = [
-                    'paypal_email' => $request->paypal_email,
-                ];
-                break;
-
-            case 'bank_transfer':
-                $details = [
-                    'bank_name' => $request->bank_name,
-                    'reference' => $request->reference,
+                    'notes' => $request->notes ?? 'Cash on delivery',
                 ];
                 break;
         }
