@@ -24,8 +24,8 @@
                         <div class="flex items-center justify-between">
                             <div class="flex-1"></div>
                             <div class="flex items-center gap-6">
-                                <img src="{{ asset('images/mnlogo.png') }}" 
-                                    alt="Mobile's Nest Logo" 
+                                <img src="{{ asset('images/mnlogo_original.png') }}"
+                                    alt="Mobile's Nest Logo"
                                     class="h-16 w-auto transition-transform hover:scale-110"/>
                                 <h1 class="text-4xl font-bold text-white">Mobile's Nest</h1>
                             </div>
@@ -56,13 +56,13 @@
                             <!-- Email Address -->
                             <div>
                                 <x-input-label for="email" :value="__('Email')" class="text-white text-lg mb-2" />
-                                <x-text-input id="email" 
-                                    class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all" 
-                                    type="email" 
-                                    name="email" 
-                                    :value="old('email')" 
+                                <x-text-input id="email"
+                                    class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                                    type="email"
+                                    name="email"
+                                    :value="old('email')"
                                     placeholder="Enter your email"
-                                    required 
+                                    required
                                     autofocus />
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>

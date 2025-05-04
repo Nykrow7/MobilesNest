@@ -1,39 +1,173 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Reset Password - Mobile's Nest</title>
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <style>
+            .gradient-background {
+                background: linear-gradient(135deg, #000000 0%, #333333 50%, #ffffff 100%);
+            }
+        </style>
+    </head>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen gradient-background">
+            <div class="bg-black/30 min-h-screen">
+                <!-- Header -->
+                <header class="py-8">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between">
+                            <a href="{{ route('welcome') }}" class="flex items-center">
+                                <img src="{{ asset('images/mnlogo_original.png') }}" alt="Mobile's Nest Logo" class="h-10 w-auto">
+                                <span class="ml-3 text-xl font-bold text-white">Mobile's Nest</span>
+                            </a>
+                        </div>
+                    </div>
+                </header>
 
-        <!-- Password Reset Token -->
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
+                <!-- Reset Password Form Section -->
+                <div class="flex justify-center items-center py-12">
+                    <div class="w-full max-w-xl bg-white/10 backdrop-blur-md shadow-2xl rounded-2xl p-12 border border-white/20">
+                        <!-- Form Header -->
+                        <div class="text-center mb-10">
+                            <h2 class="text-2xl font-bold text-white mb-2">Reset Your Password</h2>
+                            <p class="text-white/70">Create a new secure password for your account</p>
+                        </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        <form method="POST" action="{{ route('password.store') }}" class="space-y-6">
+                            @csrf
+
+                            <!-- Password Reset Token -->
+                            <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
+                            <!-- Email Address -->
+                            <div>
+                                <x-input-label for="email" :value="__('Email')" class="text-white text-lg mb-2" />
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <x-text-input id="email"
+                                        class="block w-full p-4 pl-12 bg-white/5 border border-white/10 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                                        type="email"
+                                        name="email"
+                                        :value="old('email', $request->email)"
+                                        required
+                                        autofocus
+                                        autocomplete="username" />
+                                </div>
+                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <x-input-label for="password" :value="__('Password')" class="text-white text-lg mb-2" />
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                    </div>
+                                    <x-text-input id="password"
+                                        class="block w-full p-4 pl-12 bg-white/5 border border-white/10 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                                        type="password"
+                                        name="password"
+                                        placeholder="Create a new password"
+                                        required
+                                        autocomplete="new-password" />
+                                </div>
+                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div>
+                                <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="text-white text-lg mb-2" />
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <x-text-input id="password_confirmation"
+                                        class="block w-full p-4 pl-12 bg-white/5 border border-white/10 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                                        type="password"
+                                        name="password_confirmation"
+                                        placeholder="Confirm your new password"
+                                        required
+                                        autocomplete="new-password" />
+                                </div>
+                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                            </div>
+
+                            <!-- Password Requirements -->
+                            <div class="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <p class="text-white/80 font-medium mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Password Requirements:
+                                </p>
+                                <ul class="text-sm text-white/70 space-y-2 list-none pl-6">
+                                    <li class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                        </svg>
+                                        Minimum 12 characters long
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                        </svg>
+                                        Must include uppercase and lowercase letters
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                        </svg>
+                                        Must include at least one number
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4" />
+                                        </svg>
+                                        Must include at least one special character
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="mt-8">
+                                <button type="submit" class="w-full bg-primary-800 hover:bg-primary-700 text-white font-medium py-4 px-6 rounded-lg transition duration-200 flex items-center justify-center shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                    </svg>
+                                    {{ __('Reset Password') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="py-8 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-center mb-3">
+                            <img src="{{ asset('images/mnlogo_original.png') }}" alt="Mobile's Nest Logo" class="h-8 w-auto mr-2">
+                            <span class="text-white font-medium">Mobile's Nest</span>
+                        </div>
+                        <p class="text-white/70">
+                            &copy; {{ date('Y') }} Mobile's Nest | All rights reserved
+                        </p>
+                    </div>
+                </footer>
+            </div>
         </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    </body>
+</html>

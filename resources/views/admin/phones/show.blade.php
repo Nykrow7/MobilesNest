@@ -25,16 +25,23 @@
                 <div class="col-md-8">
                     <h3>{{ $phone->name }}</h3>
                     @php
-                        $description = json_decode($phone->description, true);
-                        $brand = $description['brand'] ?? 'N/A';
-                        $specs = $description['specs'] ?? [];
+                        // Get specs from description if available
+                        try {
+                            $description = json_decode($phone->description, true);
+                            $specs = $description['specs'] ?? [];
+                            if (!is_array($specs)) {
+                                $specs = [];
+                            }
+                        } catch (\Exception $e) {
+                            $specs = [];
+                        }
                     @endphp
-                    
-                    <p><strong>Brand:</strong> {{ $brand }}</p>
+
+                    <p><strong>Brand:</strong> {{ $phone->brand ?? 'N/A' }}</p>
                     <p><strong>Price:</strong> ${{ number_format($phone->price, 2) }}</p>
                     <p><strong>SKU:</strong> {{ $phone->sku }}</p>
                     <p><strong>Stock:</strong> {{ $phone->inventory->quantity ?? 0 }}</p>
-                    
+
                     <h4 class="mt-4">Specifications</h4>
                     <div class="table-responsive">
                         <table class="table table-bordered">

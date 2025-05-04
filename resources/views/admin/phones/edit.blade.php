@@ -7,7 +7,7 @@
         <form action="{{ route('admin.phones.update', $phone) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Phone Name</label>
@@ -19,12 +19,7 @@
 
                 <div>
                     <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
-                    @php
-                        $description = json_decode($phone->description, true);
-                        $brand = $description['brand'] ?? '';
-                        $specs = $description['specs'] ?? [];
-                    @endphp
-                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="brand" name="brand" value="{{ $brand }}" required>
+                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="brand" name="brand" value="{{ $phone->brand }}" required>
                     @error('brand')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -33,7 +28,7 @@
                 <div class="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="processor" class="block text-sm font-medium text-gray-700 mb-1">Processor</label>
-                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="processor" name="specs[processor]" value="{{ $specs['processor'] ?? '' }}" required>
+                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="processor" name="specs[processor]" value="{{ old('specs.processor', $phone->processor ?? '') }}" required>
                         @error('specs.processor')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -41,7 +36,7 @@
 
                     <div>
                         <label for="memory" class="block text-sm font-medium text-gray-700 mb-1">Memory</label>
-                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="memory" name="specs[memory]" value="{{ $specs['memory'] ?? '' }}" required>
+                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="memory" name="specs[memory]" value="{{ old('specs.memory', $phone->memory ?? '') }}" required>
                         @error('specs.memory')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -49,7 +44,7 @@
 
                     <div>
                         <label for="display" class="block text-sm font-medium text-gray-700 mb-1">Display</label>
-                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="display" name="specs[display]" value="{{ $specs['display'] ?? '' }}" required>
+                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="display" name="specs[display]" value="{{ old('specs.display', $phone->display ?? '') }}" required>
                         @error('specs.display')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -57,7 +52,7 @@
 
                     <div>
                         <label for="battery" class="block text-sm font-medium text-gray-700 mb-1">Battery</label>
-                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="battery" name="specs[battery]" value="{{ $specs['battery'] ?? '' }}" required>
+                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="battery" name="specs[battery]" value="{{ old('specs.battery', $phone->battery ?? '') }}" required>
                         @error('specs.battery')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -65,7 +60,7 @@
 
                     <div>
                         <label for="camera" class="block text-sm font-medium text-gray-700 mb-1">Camera</label>
-                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="camera" name="specs[camera]" value="{{ $specs['camera'] ?? '' }}" required>
+                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="camera" name="specs[camera]" value="{{ old('specs.camera', $phone->camera ?? '') }}" required>
                         @error('specs.camera')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -73,7 +68,7 @@
 
                     <div>
                         <label for="os" class="block text-sm font-medium text-gray-700 mb-1">Operating System</label>
-                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="os" name="specs[os]" value="{{ $specs['os'] ?? '' }}" required>
+                        <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="os" name="specs[os]" value="{{ old('specs.os', $phone->os ?? '') }}" required>
                         @error('specs.os')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -84,7 +79,7 @@
                     <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                        <input type="number" step="0.01" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="price" name="price" value="{{ $phone->price }}" required>
+                        <input type="number" step="0.01" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" id="price" name="price" value="{{ old('price', $phone->price) }}" required>
                     </div>
                     @error('price')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -110,11 +105,11 @@
                                 <p class="text-sm text-gray-600 mt-2">Upload new images to replace the current ones.</p>
                             </div>
                         @endif
-                        
+
                         <!-- Main image upload area -->
-                        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative" 
+                        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md relative"
                              id="dropzone"
-                             x-data="{ 
+                             x-data="{
                                 isHovering: false,
                                 previewUrls: [],
                                 previewCount: 0,
@@ -134,14 +129,14 @@
                              x-on:dragleave.prevent="isHovering = false"
                              x-on:drop.prevent="isHovering = false; handleFiles($event)"
                              x-bind:class="{ 'bg-indigo-50 border-indigo-300': isHovering }">
-                            
+
                             <!-- Upload icon and text -->
                             <div class="space-y-1 text-center" x-show="previewUrls.length === 0">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </div>
-                            
+
                             <!-- Preview area -->
                             <div class="w-full" x-show="previewUrls.length > 0">
                                 <div class="grid grid-cols-5 gap-4 mb-4">
@@ -158,7 +153,7 @@
                                     <p class="text-sm text-gray-600 font-medium"><span x-text="previewCount"></span> images selected</p>
                                 </div>
                             </div>
-                            
+
                             <div class="flex text-sm text-gray-600 justify-center" :class="{'mt-2': previewUrls.length > 0}">
                                 <label for="images" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                     <span x-text="previewUrls.length === 0 ? 'Upload images' : 'Change images'"></span>
@@ -168,16 +163,16 @@
                             </div>
                             <p class="text-xs text-gray-500 text-center" x-show="previewUrls.length === 0">PNG, JPG up to 10MB (Upload up to 5 images)</p>
                         </div>
-                        
+
                         <!-- Help text -->
                         <p class="text-xs text-gray-500">The first image will be used as the main product image. You can upload up to 5 images.</p>
                     </div>
                     @error('images')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    @error('images.*')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    @if($errors->has('images.*'))
+                        <p class="mt-1 text-sm text-red-600">Please ensure all images are valid (JPG/PNG) and under 2MB</p>
+                    @endif
                 </div>
             </div>
 

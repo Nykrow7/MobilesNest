@@ -176,5 +176,11 @@
 
     <!-- Additional Scripts -->
     @stack('scripts')
+
+    <!-- Developer Credit -->
+    <div class="fixed bottom-4 right-4 flex items-center bg-white rounded-lg shadow-md px-3 py-2 border border-gray-200">
+        <span class="text-xs text-gray-500 mr-2">Developed by:</span>
+        <img src="{{ asset('images/mnlogo_original.png') }}" alt="Mobile's Nest Logo" class="h-6 w-auto" />
+    </div>
 </body>
 </html>

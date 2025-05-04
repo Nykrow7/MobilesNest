@@ -4,273 +4,308 @@
 
 @section('content')
 <div class="container-fluid px-4">
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center mt-6 mb-6">
         <div>
-            <h1 class="text-2xl font-semibold text-gray-800">Order Details</h1>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-indigo-600 hover:text-indigo-800">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.orders.index') }}" class="text-indigo-600 hover:text-indigo-800">Orders</a></li>
-                <li class="breadcrumb-item active text-gray-500">Order #{{ $order->order_number }}</li>
-            </ol>
+            <h1 class="text-2xl font-semibold text-black">Order Details</h1>
+            <nav class="flex mt-2" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-indigo-600">
+                            <i class="fas fa-home mr-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="inline-flex items-center">
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 mx-2 text-xs"></i>
+                            <a href="{{ route('admin.orders.index') }}" class="text-gray-700 hover:text-indigo-600">
+                                Orders
+                            </a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 mx-2 text-xs"></i>
+                            <span class="text-gray-500">Order #{{ $order->order_number }}</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
         </div>
-        <div class="d-flex gap-2">
-            <a href="{{ route('admin.orders.edit', $order) }}" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition duration-150 ease-in-out">
-                <i class="fas fa-edit me-2"></i> Edit Order
+        <div class="flex space-x-3">
+            <a href="{{ route('admin.orders.edit', $order) }}" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-edit mr-1.5 text-sm"></i> Edit Order
             </a>
-            <a href="{{ route('admin.orders.index') }}" class="btn bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg shadow-sm transition duration-150 ease-in-out">
-                <i class="fas fa-arrow-left me-2"></i> Back to Orders
+            <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-black hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-arrow-left mr-1.5 text-sm"></i> Back to Orders
             </a>
         </div>
     </div>
 
-    <!-- Order Summary Card -->
-    <div class="card mb-4 shadow-sm border-0 overflow-hidden">
-        <div class="card-header bg-white py-3">
-            <h5 class="mb-0 text-indigo-700 font-medium"><i class="fas fa-info-circle me-2"></i>Order Summary</h5>
+    <!-- Order Summary -->
+    <div class="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-black flex items-center">
+                <i class="fas fa-info-circle mr-2 text-indigo-600"></i>
+                Order Summary
+            </h2>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <div class="p-4 bg-indigo-50 rounded-lg">
-                        <div class="text-sm text-indigo-600 mb-1">Order Number</div>
-                        <div class="text-xl font-semibold text-gray-800">{{ $order->order_number }}</div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-indigo-50 rounded-lg p-4">
+                    <div class="text-sm text-indigo-600 mb-1">Order Number</div>
+                    <div class="text-xl font-semibold text-black">{{ $order->order_number }}</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4">
+                    <div class="text-sm text-green-600 mb-1">Total Amount</div>
+                    <div class="text-xl font-semibold text-black">{{ $order->formatted_total_amount }}</div>
+                </div>
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <div class="text-sm text-blue-600 mb-1">Status</div>
+                    <div class="text-xl font-semibold">{!! $order->status_badge !!}</div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="text-sm text-gray-600 mb-1">Date</div>
+                    <div class="text-xl font-semibold text-black">{{ $order->created_at->format('M d, Y') }}</div>
+                    <div class="text-sm text-gray-500">{{ $order->created_at->format('h:i A') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details and Shipping Information -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Order Information -->
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-black flex items-center">
+                    <i class="fas fa-file-invoice mr-2 text-indigo-600"></i>
+                    Order Information
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="divide-y divide-gray-200">
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Order Number</dt>
+                        <dd class="mt-1 text-sm font-medium text-black sm:mt-0 sm:ml-6">{{ $order->order_number }}</dd>
+                    </div>
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Status</dt>
+                        <dd class="mt-1 text-sm sm:mt-0 sm:ml-6">{!! $order->status_badge !!}</dd>
+                    </div>
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Payment Method</dt>
+                        <dd class="mt-1 text-sm text-black sm:mt-0 sm:ml-6">
+                            @if($order->payment_method == 'credit_card')
+                                <span class="inline-flex items-center">
+                                    <i class="far fa-credit-card text-blue-500 mr-2"></i>
+                                    Credit Card
+                                </span>
+                            @elseif($order->payment_method == 'paypal')
+                                <span class="inline-flex items-center">
+                                    <i class="fab fa-paypal text-blue-600 mr-2"></i>
+                                    PayPal
+                                </span>
+                            @elseif($order->payment_method == 'bank_transfer')
+                                <span class="inline-flex items-center">
+                                    <i class="fas fa-university text-gray-600 mr-2"></i>
+                                    Bank Transfer
+                                </span>
+                            @else
+                                {{ ucfirst($order->payment_method) }}
+                            @endif
+                        </dd>
+                    </div>
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Payment Status</dt>
+                        <dd class="mt-1 text-sm sm:mt-0 sm:ml-6">{!! $order->payment_status_badge !!}</dd>
+                    </div>
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Total Amount</dt>
+                        <dd class="mt-1 text-sm font-medium text-black sm:mt-0 sm:ml-6">{{ $order->formatted_total_amount }}</dd>
+                    </div>
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Order Date</dt>
+                        <dd class="mt-1 text-sm text-black sm:mt-0 sm:ml-6">{{ $order->created_at->format('F d, Y h:i A') }}</dd>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="p-4 bg-green-50 rounded-lg">
-                        <div class="text-sm text-green-600 mb-1">Total Amount</div>
-                        <div class="text-xl font-semibold text-gray-800">{{ $order->formatted_total_amount }}</div>
+            </div>
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-black flex items-center">
+                    <i class="fas fa-shipping-fast mr-2 text-indigo-600"></i>
+                    Shipping Information
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="divide-y divide-gray-200">
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Shipping Status</dt>
+                        <dd class="mt-1 text-sm sm:mt-0 sm:ml-6">{!! $order->shipping_status_badge !!}</dd>
                     </div>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <div class="p-4 bg-blue-50 rounded-lg">
-                        <div class="text-sm text-blue-600 mb-1">Status</div>
-                        <div class="text-xl font-semibold">{!! $order->status_badge !!}</div>
+                    @if($order->tracking_number)
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Tracking Number</dt>
+                        <dd class="mt-1 text-sm font-medium text-indigo-600 sm:mt-0 sm:ml-6">{{ $order->tracking_number }}</dd>
                     </div>
+                    @endif
+                    @if($order->shipped_at)
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Shipped Date</dt>
+                        <dd class="mt-1 text-sm text-black sm:mt-0 sm:ml-6">{{ $order->shipped_at->format('F d, Y') }}</dd>
+                    </div>
+                    @endif
+                    @if($order->delivered_at)
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Delivered Date</dt>
+                        <dd class="mt-1 text-sm text-black sm:mt-0 sm:ml-6">{{ $order->delivered_at->format('F d, Y') }}</dd>
+                    </div>
+                    @endif
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="p-4 bg-gray-50 rounded-lg">
-                        <div class="text-sm text-gray-600 mb-1">Date</div>
-                        <div class="text-xl font-semibold text-gray-800">{{ $order->created_at->format('M d, Y') }}</div>
-                        <div class="text-sm text-gray-500">{{ $order->created_at->format('h:i A') }}</div>
+
+                <div class="mt-6">
+                    <h3 class="text-sm font-medium text-black mb-3">Shipping Address</h3>
+                    <div class="bg-gray-50 rounded-md p-4">
+                        <p class="text-sm text-black whitespace-pre-line">
+                            {{ $order->shipping_address }}
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="card mb-4 shadow-sm border-0 overflow-hidden">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-gray-700 font-medium"><i class="fas fa-file-invoice me-2 text-indigo-600"></i>Order Details</h5>
+    <!-- Customer Information and Order Notes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Customer Information -->
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-black flex items-center">
+                    <i class="fas fa-user mr-2 text-indigo-600"></i>
+                    Customer Information
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center mb-6">
+                    <div class="bg-gray-200 rounded-full w-12 h-12 flex items-center justify-center mr-4 flex-shrink-0">
+                        <i class="fas fa-user text-gray-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-black mb-1">
+                            <a href="{{ route('admin.users.show', $order->user) }}" class="text-indigo-600 hover:text-indigo-800">
+                                {{ $order->user->name }}
+                            </a>
+                        </h3>
+                        <p class="text-gray-500">{{ $order->user->email }}</p>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card shadow-sm border-0 h-100">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="mb-0 text-gray-700 font-medium">Order Information</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3" style="width: 200px;">Order Number</th>
-                                            <td class="border-0 py-3 font-medium">{{ $order->order_number }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Status</th>
-                                            <td class="border-0 py-3">{!! $order->status_badge !!}</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Payment Method</th>
-                                            <td class="border-0 py-3">
-                                                @if($order->payment_method == 'credit_card')
-                                                    <span class="inline-flex items-center">
-                                                        <i class="far fa-credit-card text-blue-500 mr-2"></i>
-                                                        Credit Card
-                                                    </span>
-                                                @elseif($order->payment_method == 'paypal')
-                                                    <span class="inline-flex items-center">
-                                                        <i class="fab fa-paypal text-blue-600 mr-2"></i>
-                                                        PayPal
-                                                    </span>
-                                                @elseif($order->payment_method == 'bank_transfer')
-                                                    <span class="inline-flex items-center">
-                                                        <i class="fas fa-university text-gray-600 mr-2"></i>
-                                                        Bank Transfer
-                                                    </span>
-                                                @else
-                                                    {{ ucfirst($order->payment_method) }}
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Payment Status</th>
-                                            <td class="border-0 py-3">{!! $order->payment_status_badge !!}</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Total Amount</th>
-                                            <td class="border-0 py-3 font-medium">{{ $order->formatted_total_amount }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Order Date</th>
-                                            <td class="border-0 py-3">{{ $order->created_at->format('F d, Y h:i A') }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card shadow-sm border-0 h-100">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="mb-0 text-gray-700 font-medium">Shipping Information</h5>
-                                </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3" style="width: 200px;">Shipping Status</th>
-                                            <td class="border-0 py-3">{!! $order->shipping_status_badge !!}</td>
-                                        </tr>
-                                        @if($order->tracking_number)
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Tracking Number</th>
-                                            <td class="border-0 py-3">
-                                                <span class="font-medium text-indigo-600">{{ $order->tracking_number }}</span>
-                                            </td>
-                                        </tr>
-                                        @endif
-                                        @if($order->shipped_at)
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Shipped Date</th>
-                                            <td class="border-0 py-3">{{ $order->shipped_at->format('F d, Y') }}</td>
-                                        </tr>
-                                        @endif
-                                        @if($order->delivered_at)
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Delivered Date</th>
-                                            <td class="border-0 py-3">{{ $order->delivered_at->format('F d, Y') }}</td>
-                                        </tr>
-                                        @endif
-                                    </table>
 
-                                    <div class="mt-4">
-                                        <h6 class="text-sm font-medium text-gray-700 mb-2">Shipping Address</h6>
-                                        <div class="p-3 bg-gray-50 rounded-lg">
-                                            <p class="text-gray-600 mb-0">
-                                                {{ $order->shipping_address }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="divide-y divide-gray-200">
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Customer ID</dt>
+                        <dd class="mt-1 text-sm text-black sm:mt-0 sm:ml-6">#{{ $order->user->id }}</dd>
                     </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card shadow-sm border-0 h-100">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="mb-0 text-gray-700 font-medium"><i class="fas fa-user me-2 text-indigo-600"></i>Customer Information</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-4">
-                                        <div class="bg-gray-200 rounded-lg w-12 h-12 d-flex align-items-center justify-content-center me-3">
-                                            <i class="fas fa-user text-gray-500 fs-4"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="font-medium text-gray-800 mb-0">
-                                                <a href="{{ route('admin.users.show', $order->user) }}" class="text-indigo-600 hover:text-indigo-800">
-                                                    {{ $order->user->name }}
-                                                </a>
-                                            </h6>
-                                            <p class="text-gray-500 mb-0">{{ $order->user->email }}</p>
-                                        </div>
-                                    </div>
-                                    <table class="table">
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3" style="width: 200px;">Customer ID</th>
-                                            <td class="border-0 py-3">#{{ $order->user->id }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-gray-600 font-medium border-0 py-3">Email</th>
-                                            <td class="border-0 py-3">{{ $order->user->email }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card shadow-sm border-0 h-100">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="mb-0 text-gray-700 font-medium"><i class="fas fa-sticky-note me-2 text-indigo-600"></i>Order Notes</h5>
-                                </div>
-                                <div class="card-body">
-                                    @if($order->notes)
-                                        <div class="p-4 bg-gray-50 rounded-lg">
-                                            <p class="text-gray-600 mb-0">{{ $order->notes }}</p>
-                                        </div>
-                                    @else
-                                        <div class="text-center py-4 text-gray-500">
-                                            <i class="fas fa-sticky-note mb-2 text-2xl"></i>
-                                            <p>No notes available for this order</p>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card shadow-sm border-0 mb-4">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="mb-0 text-gray-700 font-medium"><i class="fas fa-shopping-basket me-2 text-indigo-600"></i>Order Items</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table mb-0">
-                                    <thead class="bg-gray-50 text-gray-600 text-sm">
-                                        <tr>
-                                            <th class="py-3 px-4 font-medium">Product</th>
-                                            <th class="py-3 px-4 font-medium">Price</th>
-                                            <th class="py-3 px-4 font-medium">Quantity</th>
-                                            <th class="py-3 px-4 font-medium text-right">Subtotal</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200">
-                                        @foreach($order->items as $item)
-                                            <tr class="hover:bg-gray-50 transition-colors duration-150">
-                                                <td class="py-3 px-4">
-                                                    <div class="d-flex align-items-center">
-                                                        @if($item->product->primaryImage)
-                                                        <img src="{{ asset('storage/' . $item->product->primaryImage->image_path) }}" alt="{{ $item->product->name }}" class="me-3 rounded" style="width: 50px; height: 50px; object-fit: cover;">
-                                                        @endif
-                                                        <div>
-                                                            <a href="{{ route('admin.products.show', $item->product) }}" class="text-gray-800 hover:text-indigo-600 font-medium">
-                                                                {{ $item->product->name }}
-                                                            </a>
-                                                            <p class="text-gray-500 text-sm mb-0">SKU: {{ $item->product->sku ?? 'N/A' }}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="py-3 px-4 align-middle">{{ $item->formatted_unit_price }}</td>
-                                                <td class="py-3 px-4 align-middle">{{ $item->quantity }}</td>
-                                                <td class="py-3 px-4 align-middle text-right font-medium">{{ $item->formatted_subtotal }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot class="bg-gray-50">
-                                        <tr>
-                                            <th colspan="3" class="text-right py-3 px-4 font-medium text-gray-800">Total:</th>
-                                            <td class="py-3 px-4 text-right font-bold text-gray-800">{{ $order->formatted_total_amount }}</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="py-3 flex flex-col sm:flex-row">
+                        <dt class="text-sm font-medium text-gray-500 sm:w-40 sm:flex-shrink-0">Email</dt>
+                        <dd class="mt-1 text-sm text-black sm:mt-0 sm:ml-6">{{ $order->user->email }}</dd>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Order Notes -->
+        <div class="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-black flex items-center">
+                    <i class="fas fa-sticky-note mr-2 text-indigo-600"></i>
+                    Order Notes
+                </h2>
+            </div>
+            <div class="p-6">
+                @if($order->notes)
+                    <div class="bg-gray-50 rounded-md p-4">
+                        <p class="text-sm text-black whitespace-pre-line">{{ $order->notes }}</p>
+                    </div>
+                @else
+                    <div class="text-center py-8">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100">
+                            <i class="fas fa-sticky-note text-gray-500 text-xl"></i>
+                        </div>
+                        <h3 class="mt-2 text-sm font-medium text-black">No notes</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            No additional notes are available for this order.
+                        </p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-black flex items-center">
+                <i class="fas fa-shopping-basket mr-2 text-indigo-600"></i>
+                Order Items
+            </h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Product</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Price</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Quantity</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-black uppercase tracking-wider">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($order->items as $item)
+                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-12 w-12">
+                                        @if($item->product->primaryImage)
+                                        <img src="{{ asset('storage/' . $item->product->primaryImage->image_path) }}" alt="{{ $item->product->name }}" class="h-12 w-12 rounded-md object-cover">
+                                        @endif
+                                    </div>
+                                    <div class="ml-4">
+                                        <a href="{{ route('admin.products.show', $item->product) }}" class="text-sm font-medium text-black hover:text-indigo-600">
+                                            {{ $item->product->name }}
+                                        </a>
+                                        <div class="text-xs text-gray-500">SKU: {{ $item->product->sku ?? 'N/A' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-black">{{ $item->formatted_unit_price }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-black">{{ $item->quantity }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-black text-right font-medium">{{ $item->formatted_subtotal }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot class="bg-gray-50">
+                    <tr>
+                        <th colspan="3" class="px-6 py-3 text-right text-sm font-medium text-black">Total:</th>
+                        <td class="px-6 py-3 text-right text-sm font-bold text-black">{{ $order->formatted_total_amount }}</td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
 </div>
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        // Initialize tooltips if any
+        if (typeof $.fn.tooltip === 'function') {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        }
+    });
+</script>
+@endsection
+
 @endsection

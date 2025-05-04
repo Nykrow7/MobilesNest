@@ -11,7 +11,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
             .gradient-background {
-                background: linear-gradient(135deg, #000000 0%, #2563EB 50%, #ffffff 100%);
+                background: linear-gradient(135deg, #000000 0%, #333333 50%, #ffffff 100%);
             }
         </style>
     </head>
@@ -24,8 +24,8 @@
                         <div class="flex items-center justify-between">
                             <div class="flex-1"></div>
                             <div class="flex items-center gap-6">
-                                <img src="{{ asset('images/mnlogo.png') }}" 
-                                    alt="Mobile's Nest Logo" 
+                                <img src="{{ asset('images/mnlogo_original.png') }}"
+                                    alt="Mobile's Nest Logo"
                                     class="h-16 w-auto transition-transform hover:scale-110"/>
                                 <h1 class="text-4xl font-bold text-white">Mobile's Nest</h1>
                             </div>
@@ -90,13 +90,13 @@
                                 <!-- Email Address -->
                                 <div>
                                     <x-input-label for="email" :value="__('Email')" class="text-white text-lg mb-2" />
-                                    <x-text-input id="email" 
-                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all" 
-                                        type="email" 
-                                        name="email" 
-                                        :value="old('email')" 
+                                    <x-text-input id="email"
+                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                                        type="email"
+                                        name="email"
+                                        :value="old('email')"
                                         placeholder="Enter your email"
-                                        required 
+                                        required
                                         autofocus />
                                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                 </div>
@@ -132,12 +132,12 @@
                                 <!-- Security Question -->
                                 <div>
                                     <x-input-label for="security_answer" :value="session('security_question')" class="text-white text-lg mb-2" />
-                                    <x-text-input id="security_answer" 
-                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all" 
-                                        type="text" 
-                                        name="security_answer" 
+                                    <x-text-input id="security_answer"
+                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                                        type="text"
+                                        name="security_answer"
                                         placeholder="Enter your answer"
-                                        required 
+                                        required
                                         autofocus />
                                     <p class="mt-2 text-sm text-white/50">{{ __('Note: Your answer is case-sensitive. Enter exactly as you set it up.') }}</p>
                                     <x-input-error :messages="$errors->get('security_answer')" class="mt-2" />
@@ -167,12 +167,12 @@
                                 <!-- Password -->
                                 <div>
                                     <x-input-label for="password" :value="__('New Password')" class="text-white text-lg mb-2" />
-                                    <x-text-input id="password" 
-                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all" 
-                                        type="password" 
-                                        name="password" 
+                                    <x-text-input id="password"
+                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                                        type="password"
+                                        name="password"
                                         placeholder="Enter new password"
-                                        required 
+                                        required
                                         autofocus />
                                     <div class="mt-2 text-sm text-white/70">
                                         {{ __('Password must:') }}
@@ -190,10 +190,10 @@
                                 <!-- Confirm Password -->
                                 <div>
                                     <x-input-label for="password_confirmation" :value="__('Confirm New Password')" class="text-white text-lg mb-2" />
-                                    <x-text-input id="password_confirmation" 
-                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all" 
-                                        type="password" 
-                                        name="password_confirmation" 
+                                    <x-text-input id="password_confirmation"
+                                        class="block w-full p-4 bg-white/5 border-0 text-white placeholder-white/30 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                                        type="password"
+                                        name="password_confirmation"
                                         placeholder="Confirm new password"
                                         required />
                                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />

@@ -6,6 +6,8 @@ use App\Models\Phone;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class ShopController extends Controller
 {
@@ -37,15 +39,30 @@ class ShopController extends Controller
                 // Search in multiple fields that exist in the database
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('brand', 'like', "%{$search}%")
-                  ->orWhere('processor', 'like', "%{$search}%")
-                  ->orWhere('display', 'like', "%{$search}%")
-                  ->orWhere('camera', 'like', "%{$search}%")
-                  ->orWhere('battery', 'like', "%{$search}%")
-                  ->orWhere('os', 'like', "%{$search}%")
-                  ->orWhere('ram', 'like', "%{$search}%")
-                  ->orWhere('storage_capacity', 'like', "%{$search}%")
-                  ->orWhere('color', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
+
+                // Search in specific product specs if they exist in the database
+                if (Schema::hasColumn('products', 'processor')) {
+                    $q->orWhere('processor', 'like', "%{$search}%");
+                }
+                if (Schema::hasColumn('products', 'display')) {
+                    $q->orWhere('display', 'like', "%{$search}%");
+                }
+                if (Schema::hasColumn('products', 'camera')) {
+                    $q->orWhere('camera', 'like', "%{$search}%");
+                }
+                if (Schema::hasColumn('products', 'battery')) {
+                    $q->orWhere('battery', 'like', "%{$search}%");
+                }
+                if (Schema::hasColumn('products', 'os')) {
+                    $q->orWhere('os', 'like', "%{$search}%");
+                }
+                if (Schema::hasColumn('products', 'ram')) {
+                    $q->orWhere('ram', 'like', "%{$search}%");
+                }
+                if (Schema::hasColumn('products', 'storage')) {
+                    $q->orWhere('storage', 'like', "%{$search}%");
+                }
 
                 // Also search in words separately for better matching
                 $searchTerms = explode(' ', $search);
@@ -53,17 +70,14 @@ class ShopController extends Controller
                     if (strlen($term) >= 3) { // Only search for terms with at least 3 characters
                         $q->orWhere('name', 'like', "%{$term}%")
                           ->orWhere('brand', 'like', "%{$term}%")
-                          ->orWhere('processor', 'like', "%{$term}%")
-                          ->orWhere('display', 'like', "%{$term}%")
-                          ->orWhere('camera', 'like', "%{$term}%")
-                          ->orWhere('battery', 'like', "%{$term}%")
-                          ->orWhere('os', 'like', "%{$term}%")
-                          ->orWhere('ram', 'like', "%{$term}%")
-                          ->orWhere('storage_capacity', 'like', "%{$term}%")
-                          ->orWhere('color', 'like', "%{$term}%");
+                          ->orWhere('description', 'like', "%{$term}%");
                     }
                 }
             });
+
+            // Log the search query for debugging
+            Log::info("Search query: {$search}");
+            Log::info("SQL: {$query->toSql()}");
         }
 
         // Get phones

@@ -23,8 +23,15 @@ class PhoneController extends Controller
             $query->select('id')
                   ->from('product_categories')
                   ->where('name', 'Phones');
-        })->with('inventory')->paginate(10);
-        
+        })->with(['inventory', 'images'])->paginate(10);
+
+        // Ensure each phone has a valid description
+        foreach ($phones as $phone) {
+            if (!is_string($phone->description)) {
+                $phone->description = json_encode(['brand' => 'N/A', 'specs' => []]);
+            }
+        }
+
         return view('admin.phones.index', compact('phones'));
     }
 
@@ -60,16 +67,20 @@ class PhoneController extends Controller
             'images' => 'required|array|min:1|max:5',
             'images.*' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-        
+
         // Collect specs from form fields
-        $specs = [
-            'processor' => $request->input('specs.processor'),
-            'memory' => $request->input('specs.memory'),
-            'display' => $request->input('specs.display'),
-            'battery' => $request->input('specs.battery'),
-            'camera' => $request->input('specs.camera'),
-            'os' => $request->input('specs.os')
-        ];
+        $specs = [];
+        if ($request->has('specs')) {
+            $specsInput = $request->input('specs');
+            $specs = [
+                'processor' => $specsInput['processor'] ?? '',
+                'memory' => $specsInput['memory'] ?? '',
+                'display' => $specsInput['display'] ?? '',
+                'battery' => $specsInput['battery'] ?? '',
+                'camera' => $specsInput['camera'] ?? '',
+                'os' => $specsInput['os'] ?? ''
+            ];
+        }
 
         // Get or create the Phones category
         $category = ProductCategory::firstOrCreate(
@@ -80,7 +91,7 @@ class PhoneController extends Controller
         // Generate a unique slug for the phone product
         $baseSlug = Str::slug($validated['brand'] . '-' . $validated['name']);
         $slug = $this->generateUniqueSlug($baseSlug);
-        
+
         // Create the phone product
         $phone = Product::create([
             'name' => $validated['name'],
@@ -133,6 +144,14 @@ class PhoneController extends Controller
      */
     public function show(Product $phone)
     {
+        // Ensure the phone has a valid description
+        if (!is_string($phone->description)) {
+            $phone->description = json_encode(['brand' => 'N/A', 'specs' => []]);
+        }
+
+        // Load related data
+        $phone->load(['inventory', 'images']);
+
         return view('admin.phones.show', compact('phone'));
     }
 
@@ -144,6 +163,9 @@ class PhoneController extends Controller
      */
     public function edit(Product $phone)
     {
+        // Load related data
+        $phone->load(['inventory', 'images']);
+
         return view('admin.phones.edit', compact('phone'));
     }
 
@@ -169,21 +191,25 @@ class PhoneController extends Controller
             'images' => 'nullable|array|max:5',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-        
+
         // Collect specs from form fields
-        $specs = [
-            'processor' => $request->input('specs.processor'),
-            'memory' => $request->input('specs.memory'),
-            'display' => $request->input('specs.display'),
-            'battery' => $request->input('specs.battery'),
-            'camera' => $request->input('specs.camera'),
-            'os' => $request->input('specs.os')
-        ];
+        $specs = [];
+        if ($request->has('specs')) {
+            $specsInput = $request->input('specs');
+            $specs = [
+                'processor' => $specsInput['processor'] ?? '',
+                'memory' => $specsInput['memory'] ?? '',
+                'display' => $specsInput['display'] ?? '',
+                'battery' => $specsInput['battery'] ?? '',
+                'camera' => $specsInput['camera'] ?? '',
+                'os' => $specsInput['os'] ?? ''
+            ];
+        }
 
         // Generate a unique slug for the phone product if it's different from current
         $baseSlug = Str::slug($validated['brand'] . '-' . $validated['name']);
         $slug = ($baseSlug !== $phone->slug) ? $this->generateUniqueSlug($baseSlug) : $phone->slug;
-        
+
         // Update the phone
         $phone->update([
             'name' => $validated['name'],
@@ -212,7 +238,7 @@ class PhoneController extends Controller
                     $image->delete();
                 }
             }
-            
+
             // Upload new images
             foreach ($request->file('images') as $index => $imageFile) {
                 $path = $imageFile->store('phones', 'public');
@@ -244,14 +270,14 @@ class PhoneController extends Controller
 
         // Delete inventory record
         $phone->inventory()->delete();
-        
+
         // Delete the phone
         $phone->delete();
 
         return redirect()->route('admin.phones.index')
             ->with('success', 'Phone deleted successfully.');
     }
-    
+
     /**
      * Generate a unique slug for a product.
      *
@@ -262,12 +288,12 @@ class PhoneController extends Controller
     {
         $originalSlug = $baseSlug;
         $count = 1;
-        
+
         // Check if the slug already exists
         while (Product::where('slug', $baseSlug)->exists()) {
             $baseSlug = $originalSlug . '-' . $count++;
         }
-        
+
         return $baseSlug;
     }
 }

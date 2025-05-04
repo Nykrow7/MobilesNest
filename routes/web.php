@@ -103,7 +103,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('orders', AdminOrderController::class);
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::resource('phones', PhoneController::class);
+
+    // Transactions
     Route::resource('transactions', AdminTransactionController::class);
+    Route::get('transactions/export/{type}', [AdminTransactionController::class, 'export'])->name('transactions.export');
 
     // Inventory management
     Route::prefix('inventory')->name('inventory.')->group(function () {
@@ -115,5 +118,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/export', [InventoryController::class, 'export'])->name('export');
     });
 }); // End of admin routes group
+
+// PDF Test Route
+Route::get('/test-pdf', [\App\Http\Controllers\PDFController::class, 'generatePDF'])->name('test.pdf');
 
 require __DIR__.'/auth.php';

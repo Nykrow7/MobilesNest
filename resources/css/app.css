@@ -2,6 +2,215 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Formal UI Theme */
 .gradient-background {
-    background: linear-gradient(135deg, #000000 0%, #2563EB 50%, #ffffff 100%);
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
+}
+
+.header-gradient {
+    background: linear-gradient(to right, #f0f9ff, #e0f2fe, #f0f9ff);
+}
+
+.sidebar-gradient {
+    background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+}
+
+.card-gradient {
+    background: linear-gradient(to bottom, #ffffff, #f9fafb);
+}
+
+.subtle-pattern {
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f1f5f9' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.dirty-white-bg {
+    background-color: #f5f5f0;
+}
+
+.dot-pattern {
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f1f5f9' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.table-header-bg {
+    background-color: #f0f9ff;
+}
+
+.table-row-alt {
+    background-color: #f9fafb;
+}
+
+/* Typography Enhancements */
+.text-readable {
+    @apply text-gray-800 leading-relaxed;
+    letter-spacing: 0.01em;
+}
+
+.heading-xl {
+    @apply text-3xl font-bold text-gray-900 mb-6 leading-tight;
+}
+
+.heading-lg {
+    @apply text-2xl font-bold text-gray-900 mb-4 leading-tight;
+}
+
+.heading-md {
+    @apply text-xl font-semibold text-gray-800 mb-3;
+}
+
+.heading-sm {
+    @apply text-lg font-medium text-gray-800 mb-2;
+}
+
+.paragraph {
+    @apply text-base text-gray-700 leading-relaxed mb-4;
+}
+
+/* Custom Components */
+@layer components {
+    /* Buttons */
+    .btn-primary {
+        @apply inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150;
+    }
+
+    .btn-success {
+        @apply inline-flex items-center px-4 py-2 bg-teal-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-teal-700 focus:bg-teal-700 active:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition ease-in-out duration-150;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-shadow duration-300 hover:shadow-md;
+    }
+
+    .card-header {
+        @apply px-6 py-4 bg-blue-50 border-b border-gray-200 text-blue-800 font-medium;
+    }
+
+    .card-body {
+        @apply p-6;
+    }
+
+    /* Enhanced Card Variations */
+    .card-elevated {
+        @apply bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px];
+    }
+
+    .card-flat {
+        @apply bg-gray-50 rounded-lg border border-gray-200 overflow-hidden p-6;
+    }
+
+    .card-accent {
+        @apply bg-white rounded-lg shadow-sm border-l-4 border border-blue-500 overflow-hidden;
+    }
+
+    /* Content Containers */
+    .content-section {
+        @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8;
+    }
+
+    .content-box {
+        @apply bg-gray-50 rounded-md border border-gray-200 p-4 mb-4;
+    }
+
+    /* Section Headers */
+    .section-header {
+        @apply text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200;
+    }
+
+    /* Form Elements */
+    .form-input {
+        @apply rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+
+    .form-section {
+        @apply bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6;
+    }
+
+    /* Tables */
+    .table-container {
+        @apply bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden;
+    }
+
+    .table-header {
+        @apply px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider bg-blue-50 border-b border-gray-200;
+    }
+
+    .table-cell {
+        @apply px-6 py-4 whitespace-nowrap text-sm text-gray-800 border-b border-gray-100;
+    }
+
+    .table-row-alt {
+        @apply bg-gray-50;
+    }
+
+    /* Navigation */
+    .nav-link {
+        @apply flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200;
+    }
+
+    .nav-link-active {
+        @apply flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-md font-medium;
+    }
+
+    /* Stats Cards */
+    .stat-card {
+        @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300;
+    }
+
+    .stat-icon-container {
+        @apply p-3 rounded-full bg-blue-100 text-blue-600;
+    }
+
+    /* Layout Components */
+    .page-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+    }
+
+    .two-column-layout {
+        @apply grid grid-cols-1 lg:grid-cols-3 gap-8;
+    }
+
+    .main-column {
+        @apply lg:col-span-2;
+    }
+
+    .sidebar-column {
+        @apply lg:col-span-1;
+    }
+
+    .grid-layout {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+    }
+
+    /* Dividers and Separators */
+    .divider {
+        @apply border-t border-gray-200 my-8;
+    }
+
+    .divider-vertical {
+        @apply border-l border-gray-200 h-full mx-4;
+    }
+
+    .section-divider {
+        @apply relative py-5;
+    }
+
+    .section-divider::before {
+        content: '';
+        @apply absolute left-0 right-0 border-t border-gray-200;
+        top: 50%;
+    }
+
+    .section-divider-text {
+        @apply relative bg-white px-4 text-sm text-gray-500 inline-block;
+    }
 }

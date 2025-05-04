@@ -48,10 +48,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $phone->name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    @php
-                                        $description = json_decode($phone->description, true);
-                                        echo $description['brand'] ?? 'N/A';
-                                    @endphp
+                                    {{ $phone->brand ?? 'N/A' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($phone->price, 2) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
