@@ -89,13 +89,13 @@
                                             <small class="form-text text-muted">When inventory falls below this threshold, it will be marked as low stock.</small>
                                         </div>
 
-                                        <div class="form-group mt-4">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Update Inventory
-                                            </button>
-                                            <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary">
-                                                <i class="fas fa-times"></i> Cancel
+                                        <div class="flex justify-end space-x-4 mt-6">
+                                            <a href="{{ route('admin.inventory.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                <i class="fas fa-times mr-1"></i> Cancel
                                             </a>
+                                            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                <i class="fas fa-save mr-1"></i> Update Inventory
+                                            </button>
                                         </div>
                                     </form>
                                 </div>

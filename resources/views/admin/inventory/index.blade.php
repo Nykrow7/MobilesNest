@@ -172,54 +172,67 @@
 <!-- Adjustment Modals -->
 @foreach ($inventory as $item)
     <div class="modal fade" id="adjustModal{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="adjustModalLabel{{ $item->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content rounded-lg shadow-lg border border-primary-100">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content rounded-lg shadow-lg border border-gray-200">
                 <form action="{{ route('admin.inventory.adjust', $item->id) }}" method="POST">
                     @csrf
-                    <div class="modal-header bg-primary-50 border-b border-primary-100 py-3">
-                        <h5 class="modal-title text-primary-900 font-medium flex items-center" id="adjustModalLabel{{ $item->id }}">
-                            <svg class="h-5 w-5 text-primary-700 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                            </svg>
-                            Adjust Inventory for {{ $item->product->name }}
+                    <div class="modal-header bg-gray-50 border-b border-gray-200 py-3">
+                        <h5 class="modal-title text-gray-900 font-medium text-sm" id="adjustModalLabel{{ $item->id }}">
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 text-indigo-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                                </svg>
+                                <span>Adjust Inventory</span>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1 font-normal">{{ $item->product->name }}</div>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-4">
-                        <div class="mb-4">
-                            <label for="adjustment" class="block text-primary-800 font-medium mb-2">Quantity Adjustment</label>
-                            <div class="flex">
-                                <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-l-lg decrease-btn flex items-center justify-center">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                                    </svg>
-                                </button>
-                                <input type="number" name="adjustment" id="adjustment" class="w-full border-primary-200 focus:border-primary-500 focus:ring focus:ring-primary-200 focus:ring-opacity-50 text-center" value="0" required>
-                                <button type="button" class="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-r-lg increase-btn flex items-center justify-center">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
-                                </button>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="adjustment{{ $item->id }}" class="block text-sm font-medium text-gray-700 mb-1">Quantity Adjustment</label>
+                                <div class="flex items-center">
+                                    <button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-l-md decrease-btn flex items-center justify-center">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                                        </svg>
+                                    </button>
+                                    <input type="number" name="adjustment" id="adjustment{{ $item->id }}" class="w-20 border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center" value="0" required>
+                                    <button type="button" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-r-md increase-btn flex items-center justify-center">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p class="text-gray-500 text-xs mt-1">
+                                    Current quantity: <span class="font-medium">{{ $item->quantity }}</span>
+                                </p>
+                                <p class="text-gray-500 text-xs">
+                                    Use positive values to increase, negative to decrease.
+                                </p>
                             </div>
-                            <p class="text-primary-600 text-sm mt-2">
-                                Current quantity: <span class="font-medium">{{ $item->quantity }}</span>. Use positive values to increase, negative to decrease.
-                            </p>
-                        </div>
-                        <div class="mb-3">
-                            <label for="reason" class="block text-primary-800 font-medium mb-2">Reason for Adjustment</label>
-                            <select name="reason" id="reason" class="w-full rounded-md border-primary-200 focus:border-primary-500 focus:ring focus:ring-primary-200 focus:ring-opacity-50 shadow-sm" required>
-                                <option value="">Select a reason</option>
-                                <option value="New Stock">New Stock</option>
-                                <option value="Inventory Count">Inventory Count</option>
-                                <option value="Damaged">Damaged</option>
-                                <option value="Return">Return</option>
-                                <option value="Other">Other</option>
-                            </select>
+
+                            <div>
+                                <label for="reason{{ $item->id }}" class="block text-sm font-medium text-gray-700 mb-1">Reason for Adjustment</label>
+                                <select name="reason" id="reason{{ $item->id }}" class="w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-sm text-sm" required>
+                                    <option value="">Select a reason</option>
+                                    <option value="New Stock">New Stock</option>
+                                    <option value="Inventory Count">Inventory Count</option>
+                                    <option value="Damaged">Damaged</option>
+                                    <option value="Return">Return</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer bg-primary-50 border-t border-primary-100 py-3">
-                        <button type="button" class="bg-white border border-primary-200 hover:bg-primary-50 text-primary-800 font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="bg-primary-800 hover:bg-primary-900 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out shadow-sm">Save Changes</button>
+                    <div class="modal-footer bg-gray-50 border-t border-gray-200 py-3 flex justify-end space-x-2">
+                        <button type="button" class="px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-3 py-1.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Save Changes
+                        </button>
                     </div>
                 </form>
             </div>
@@ -240,12 +253,14 @@
         // Quantity adjustment buttons
         $('.decrease-btn').on('click', function() {
             const input = $(this).closest('.flex').find('input');
-            input.val(parseInt(input.val()) - 1);
+            const currentVal = parseInt(input.val()) || 0;
+            input.val(currentVal - 1);
         });
 
         $('.increase-btn').on('click', function() {
             const input = $(this).closest('.flex').find('input');
-            input.val(parseInt(input.val()) + 1);
+            const currentVal = parseInt(input.val()) || 0;
+            input.val(currentVal + 1);
         });
 
         // Add tooltips to action buttons
