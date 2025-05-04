@@ -101,13 +101,16 @@ class TransactionController extends Controller
                 // Create a session variable to store the transaction ID for admin reference
                 session(['last_transaction_id' => $transaction->id]);
 
-                // Flash a success message with transaction details
-                $successMessage = 'Order Successful! Your order #' . $order->order_number . ' has been placed. ' .
-                                 'Transaction #' . $transaction->transaction_number . ' has been recorded.';
+                // Store transaction information in the session
+                session(['order_success' => true]);
+                session(['order_number' => $order->order_number]);
+                session(['transaction_number' => $transaction->transaction_number]);
 
-                // Redirect to shop phones page
-                return redirect()->route('shop.index')
-                    ->with('success', $successMessage);
+                // Render the payment success page with order and transaction details
+                return view('checkout.payment-success', [
+                    'order' => $order,
+                    'transaction' => $transaction
+                ]);
             } else {
                 // Log failed payment
                 \Illuminate\Support\Facades\Log::error('Payment failed for order: ' . $order->id);

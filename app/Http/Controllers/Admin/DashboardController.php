@@ -23,11 +23,11 @@ class DashboardController extends Controller
         $totalRevenue = Order::where('payment_status', 'paid')->sum('final_amount');
 
         // Get low stock products
-        $lowStockProducts = Product::join('inventories', 'products.id', '=', 'inventories.product_id')
-            ->where('inventories.quantity', '<', 10)
-            ->where('products.is_active', true)
-            ->with('category')
-            ->select('products.*')
+        $lowStockProducts = Product::whereHas('inventory', function ($query) {
+                $query->whereRaw('quantity < low_stock_threshold');
+            })
+            ->where('is_active', true)
+            ->with(['category', 'inventory'])
             ->limit(5)
             ->get();
 
@@ -39,6 +39,7 @@ class DashboardController extends Controller
 
         // Get recent transactions
         $recentTransactions = \App\Models\Transaction::with(['order.user'])
+            ->whereHas('order.user') // Ensure the transaction has an order with a user
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
@@ -62,11 +63,15 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // Format the total revenue
+        $formattedTotalRevenue = app(\App\Helpers\CurrencyHelper::class)->formatPeso($totalRevenue);
+
         return view('admin.dashboard', compact(
             'totalProducts',
             'totalOrders',
             'totalCustomers',
             'totalRevenue',
+            'formattedTotalRevenue',
             'lowStockProducts',
             'recentOrders',
             'recentTransactions',

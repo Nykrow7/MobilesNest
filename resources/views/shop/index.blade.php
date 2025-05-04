@@ -40,25 +40,39 @@
 </script>
 @endpush
 <!-- Success Message -->
-@if (session('success'))
-<div class="fixed top-20 left-0 right-0 mx-auto max-w-3xl z-50 bg-primary-50 border border-primary-200 text-primary-800 p-4 rounded-lg shadow-lg" role="alert" id="success-message">
+@if (session('success') || session('order_success'))
+<div class="fixed top-20 left-0 right-0 mx-auto max-w-3xl z-50 bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg shadow-xl" role="alert" id="success-message">
     <div class="flex items-center justify-between">
         <div class="flex items-center">
-            <div class="py-1">
-                <svg class="w-6 h-6 text-primary-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div class="bg-green-100 rounded-full p-2 mr-4">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
             <div>
-                <p class="font-medium text-lg">{{ session('success') }}</p>
-                @if(session('last_transaction_id'))
-                <p class="text-sm mt-1 text-primary-600">
-                    Your transaction has been recorded. An administrator will process your order shortly.
+                <h3 class="font-bold text-xl text-green-800 mb-1">Order Successful!</h3>
+                @if(session('success'))
+                <p class="font-medium text-green-700">{{ session('success') }}</p>
+                @else
+                <p class="font-medium text-green-700">Your order has been placed and is now being processed.</p>
+                @endif
+
+                @if(session('order_number') && session('transaction_number'))
+                <div class="mt-3 p-3 bg-white rounded-md border border-green-100">
+                    <p class="text-sm text-green-700 mb-1">
+                        <span class="font-semibold">Order #:</span> {{ session('order_number') }}
+                    </p>
+                    <p class="text-sm text-green-700">
+                        <span class="font-semibold">Transaction #:</span> {{ session('transaction_number') }}
+                    </p>
+                </div>
+                <p class="text-sm mt-3 text-green-600">
+                    Your order is now being processed. You can continue shopping below.
                 </p>
                 @endif
             </div>
         </div>
-        <button type="button" class="text-primary-600 hover:text-primary-800" onclick="document.getElementById('success-message').remove()">
+        <button type="button" class="text-green-600 hover:text-green-800 bg-green-100 hover:bg-green-200 rounded-full p-2 transition-colors duration-200" onclick="document.getElementById('success-message').remove()">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -67,15 +81,20 @@
 </div>
 
 <script>
-    // Auto-scroll to phone grid and auto-dismiss success message after 5 seconds
+    // Auto-scroll to phone grid and auto-dismiss success message after 8 seconds
     document.addEventListener('DOMContentLoaded', function() {
         if (document.getElementById('success-message')) {
-            // Scroll to phone grid
-            document.getElementById('phone-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Add animation class
+            const message = document.getElementById('success-message');
+            message.classList.add('animate-bounce-in');
 
-            // Auto-dismiss after 5 seconds
+            // Scroll to phone grid after a short delay
             setTimeout(function() {
-                const message = document.getElementById('success-message');
+                document.getElementById('phone-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 1500);
+
+            // Auto-dismiss after 8 seconds
+            setTimeout(function() {
                 if (message) {
                     message.classList.add('opacity-0', 'transition-opacity', 'duration-500');
                     setTimeout(function() {
@@ -84,10 +103,21 @@
                         }
                     }, 500);
                 }
-            }, 5000);
+            }, 8000);
         }
     });
 </script>
+
+<style>
+    @keyframes bounceIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        60% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(1); }
+    }
+    .animate-bounce-in {
+        animation: bounceIn 0.6s ease-in-out;
+    }
+</style>
 @endif
 
 <!-- Hero Section -->
